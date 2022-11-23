@@ -5,7 +5,7 @@ struct card
 {
     char *suit;
     int value;
-    //char c;
+    char *vname;
 };
 //是不是打印出来“A 2...J Q K"而不是“1 2...11 12 13”会比较好，
 //所以可能需要加个char的属性？
