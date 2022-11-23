@@ -3,11 +3,13 @@
 #include <time.h>
 
 #include "utility.h"
+#include "deque.h"
 
 int main()
 {
 	struct card monsters[12];
 	struct card soldiers[40];
+	
 
 	srand((unsigned int)time(NULL));
 
@@ -22,16 +24,15 @@ int main()
 	shuffle(soldiers, 40);
 
 	for (int i = 0; i < 12; i++)
-		if (monsters[i].value == 1 || (monsters[i].value >= 11 && monsters[i].value <= 13)) {
-			printf("%s %s\n", monsters[i].suit, monsters[i].vname);
-		} else
-			printf("%s %d\n", monsters[i].suit, monsters[i].value);
+		printf("%s %s\n", monsters[i].suit, monsters[i].vname);
 
 	for (int i = 0; i < 40; i++)
-		if (soldiers[i].value == 1 ) {
-			printf("%s %s\n", soldiers[i].suit, soldiers[i].vname);
-		} else
-			printf("%s %d\n", soldiers[i].suit, soldiers[i].value);
+		printf("%s %s\n", soldiers[i].suit, soldiers[i].vname);
 
+	struct deque deck = createDeque();
+	enqueueHead(&deck, monsters[0]);
+	enqueueHead(&deck, monsters[1]);
+
+	
 	return 0;
 }

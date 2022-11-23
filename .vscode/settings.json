@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "stdlib.h": "c",
+        "regicide.h": "c"
+    },
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/home/qikongjia/regicide",
+            "binaryPath": "/home/qikongjia/regicide/regicide",
+            "binaryArgs": []
+        }
+    ]
+}

@@ -5,6 +5,8 @@
 
 #include "utility.h"
 
+char *display[] = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
+
 void shuffle(void *arr, int size)
 {
 	struct card *cards = (struct card *)arr;
@@ -41,26 +43,7 @@ void printCard(struct card *cards, int start, int end)
 			}
 
 			cards[count].value = i;
-			
-			switch (i)
-			{
-			case 1:
-				cards[count].vname = "A";
-				break;
-			case 11:
-				cards[count].vname = "J";
-				break;
-			case 12:
-				cards[count].vname = "Q";
-				break;
-			case 13:
-				cards[count].vname = "K";
-				break;
-			default:
-				//itoa(i, &cards[count].vname, 10);
-				break;
-			}
-
+			cards[count].vname = display[i - 1];
 			count++;
 		}
 	}
