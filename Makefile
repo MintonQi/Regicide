@@ -1,5 +1,5 @@
 all:
-	gcc -g regicide.c utility.c deque.c -o regicide
+	gcc -g regicide.c deque.c utility.c -o regicide
 
 clean:
 	rm -rf *.o

@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "utility.h"
 #include "deque.h"
+#include "utility.h"
+
 
 int main()
 {
@@ -30,16 +31,18 @@ int main()
 
 	struct deque deck = createDeque();
 
-	enqueueHead(&deck, monsters[0]);
-	enqueueHead(&deck, monsters[1]);
-	enqueueTail(&deck, monsters[11]);
-	printf("%d\n", getSize(&deck));
-	printf("%s\n", deck.head->next->data.vname);
-	printf("%s\n", deck.head->next->next->data.vname);
-	printf("%s\n", deck.head->next->next->next->data.vname);
-	printf("%s\n", dequeueHead(&deck).vname);
-	printf("%s\n", dequeueHead(&deck).vname);
-	printf("%s\n", dequeueHead(&deck).vname);
-	printf("%d\n", getSize(&deck));
+	//addCardsToDeck(&deck, soldiers, 40);
+
+	// enqueueHead(&deck, monsters[0]);
+	// enqueueHead(&deck, monsters[1]);
+	// enqueueTail(&deck, monsters[11]);
+	// printf("%d\n", getSize(&deck));
+	// printf("%s\n", deck.head->next->data.vname);
+	// printf("%s\n", deck.head->next->next->data.vname);
+	// printf("%s\n", deck.head->next->next->next->data.vname);
+	// printf("%s\n", dequeueHead(&deck).vname);
+	// printf("%s\n", dequeueHead(&deck).vname);
+	// printf("%s\n", dequeueHead(&deck).vname);
+	//printf("%d\n", deck.size);
 	return 0;
 }

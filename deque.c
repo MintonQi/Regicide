@@ -11,6 +11,7 @@ struct deque createDeque()
 	q.head->data = (struct card){ "0", "0", 0 };
 	q.head->next = NULL;
 	q.tail       = q.head;
+    q.size = 0;
 	return q;
 }
 
@@ -28,6 +29,7 @@ void enqueueHead(struct deque *q, struct card e)
 		q->tail = ptr;
 	}
 	h->next = ptr;
+    q->size++;
 }
 
 void enqueueTail(struct deque *q, struct card e)
@@ -38,6 +40,7 @@ void enqueueTail(struct deque *q, struct card e)
 	ptr->next        = NULL;
 	q->tail->next    = ptr;
 	q->tail          = ptr;
+    q->size++;
 }
 
 struct card dequeueHead(struct deque *q)
@@ -51,16 +54,8 @@ struct card dequeueHead(struct deque *q)
 		h->next = NULL;
 		q->tail = h;
 	}
+    q->size--;
 	return e;
 }
 
-int getSize(struct deque *q)
-{
-	int          size = 0;
-	struct Node *p    = q->head;
-	while (p->next) {
-		size++;
-		p = p->next;
-	}
-	return size;
-}
+

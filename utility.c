@@ -4,6 +4,7 @@
 #include <math.h>
 
 #include "utility.h"
+#include "deque.h"
 
 char *vnames[] = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
 char *suits[]  = { "Spade", "Club", "Heart", "Diamond" };
@@ -32,4 +33,11 @@ void printCard(struct card *cards, int start, int end)
 			count++;
 		}
 	}
+}
+
+//从牌堆底部加入
+void addCardsToDeck(struct deque *q, struct card *cards, int n){
+	// for(int i = 0; i < n; i++) {
+	// 	enqueueTail(q, cards[i]);
+	// }
 }
