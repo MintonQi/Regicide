@@ -3,26 +3,64 @@
 #include "utility.h"
 #include "deque.h"
 
-
 struct deque createDeque()
 {
 	struct deque q;
 	q.head = q.tail = (struct Node *)malloc(sizeof(struct Node));
-	q.head->data    = (struct card){ "0", "0", 0 };
-	q.head->next    = NULL;
-	q.tail->next    = NULL;
-    return q;
+	// create dummy head
+	q.head->data = (struct card){ "0", "0", 0 };
+	q.head->next = NULL;
+	q.tail       = q.head;
+	return q;
 }
 
-void enqueueHead(struct deque *q, struct card e){
-    struct Node *ptr = (struct Node *)malloc(sizeof(struct Node));
-    ptr->data = e;
-    ptr->prev = q->head;
-    ptr->next = q->head->next;
-    q->head->next->prev = ptr;
-    q->head->next = ptr;
+void enqueueHead(struct deque *q, struct card e)
+{
+	struct Node *ptr = (struct Node *)malloc(sizeof(struct Node));
+	struct Node *h   = q->head;
+	ptr->data        = e;
+	ptr->prev        = h;
+	ptr->next        = h->next;
+	if (h->next) {
+		h->next->prev = ptr;
+
+	} else {
+		q->tail = ptr;
+	}
+	h->next = ptr;
 }
 
-void enqueueTail(struct deque *q, struct card e){
-    struct Node *ptr = (struct Node *)malloc(sizeof(struct Node));
+void enqueueTail(struct deque *q, struct card e)
+{
+	struct Node *ptr = (struct Node *)malloc(sizeof(struct Node));
+	ptr->data        = e;
+	ptr->prev        = q->tail;
+	ptr->next        = NULL;
+	q->tail->next    = ptr;
+	q->tail          = ptr;
+}
+
+struct card dequeueHead(struct deque *q)
+{
+	struct Node *h = q->head;
+	struct card  e = h->next->data;
+	if (h->next->next) {
+		h->next->next->prev = h;
+		h->next             = h->next->next;
+	} else {
+		h->next = NULL;
+		q->tail = h;
+	}
+	return e;
+}
+
+int getSize(struct deque *q)
+{
+	int          size = 0;
+	struct Node *p    = q->head;
+	while (p->next) {
+		size++;
+		p = p->next;
+	}
+	return size;
 }

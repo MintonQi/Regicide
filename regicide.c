@@ -9,7 +9,6 @@ int main()
 {
 	struct card monsters[12];
 	struct card soldiers[40];
-	
 
 	srand((unsigned int)time(NULL));
 
@@ -30,9 +29,17 @@ int main()
 		printf("%s %s\n", soldiers[i].suit, soldiers[i].vname);
 
 	struct deque deck = createDeque();
+
 	enqueueHead(&deck, monsters[0]);
 	enqueueHead(&deck, monsters[1]);
-
-	
+	enqueueTail(&deck, monsters[11]);
+	printf("%d\n", getSize(&deck));
+	printf("%s\n", deck.head->next->data.vname);
+	printf("%s\n", deck.head->next->next->data.vname);
+	printf("%s\n", deck.head->next->next->next->data.vname);
+	printf("%s\n", dequeueHead(&deck).vname);
+	printf("%s\n", dequeueHead(&deck).vname);
+	printf("%s\n", dequeueHead(&deck).vname);
+	printf("%d\n", getSize(&deck));
 	return 0;
 }
