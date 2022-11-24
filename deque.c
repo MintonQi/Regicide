@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "utility.h"
+
 #include "deque.h"
+
 
 struct deque createDeque()
 {

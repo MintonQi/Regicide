@@ -4,7 +4,6 @@
 #include <math.h>
 
 #include "utility.h"
-#include "deque.h"
 
 char *vnames[] = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
 char *suits[]  = { "Spade", "Club", "Heart", "Diamond" };
@@ -15,7 +14,6 @@ void shuffle(void *arr, int size)
 
 	for (int i = 0; i < size; i++) {
 		int j = rand() % size;
-		// printf("%d\n", j);
 		struct card temp = cards[j];
 		cards[j]         = cards[i];
 		cards[i]         = temp;
@@ -36,8 +34,14 @@ void printCard(struct card *cards, int start, int end)
 }
 
 //从牌堆底部加入
+//1. 初始化牌堆  2.从弃牌堆heal
 void addCardsToDeck(struct deque *q, struct card *cards, int n){
-	// for(int i = 0; i < n; i++) {
-	// 	enqueueTail(q, cards[i]);
-	// }
+	for(int i = 0; i < n; i++) {
+		enqueueTail(q, cards[i]);
+	}
 }
+
+void hireFromDeck(struct deque *q, struct card *cards, int n) {
+	
+}
+

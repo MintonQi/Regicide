@@ -1,7 +1,8 @@
 {
     "files.associations": {
         "stdlib.h": "c",
-        "regicide.h": "c"
+        "regicide.h": "c",
+        "time.h": "c"
     },
     "makefile.launchConfigurations": [
         {
