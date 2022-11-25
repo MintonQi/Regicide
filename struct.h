@@ -1,6 +1,10 @@
 #ifndef STRUCT_H
 #define STRUCT_H
 
+#define PLAYER_MAX 8
+#define ENEMIES_MAX 12
+#define SOLDIERS_MAX 40
+
 struct card {
 	char *suit;
 	char *vname;

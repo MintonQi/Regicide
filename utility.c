@@ -4,10 +4,12 @@
 #include <math.h>
 
 #include "utility.h"
+#include "deque.h"
 
 char *vnames[] = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
 char *suits[]  = { "Spade", "Club", "Heart", "Diamond" };
 
+//洗牌  1. 敌人队列  2. 弃牌堆
 void shuffle(void *arr, int size)
 {
 	struct card *cards = (struct card *)arr;
@@ -41,7 +43,17 @@ void addCardsToDeck(struct deque *q, struct card *cards, int n){
 	}
 }
 
-void hireFromDeck(struct deque *q, struct card *cards, int n) {
-	
+void hireFromDeck(struct deque *q, struct card *cards, int n, int *playerCardsNum) {
+	//(*playerCardsNum)++;
+	// if(PLAYER_MAX - *playerCardsNum >= n){
+	// 	for(int i = 0; i < PLAYER_MAX; i++) {
+	// 		if(cards[i].value == 0){
+	// 			cards[i] = dequeueHead(q);
+	// 			*playerCardsNum++;
+	// 			n--;
+	// 		}
+	// 		printf("%s %s\n",dequeueHead(q).suit, dequeueHead(q).vname);
+	// 	}
+	// }
 }
 
