@@ -35,13 +35,12 @@ int main()
 	// 	printf("%s %d\n", player[i].suit, player[i].value);
 
 	struct deque deck = createDeque();
-	addCardsToDeck(&deck, soldiers, SOLDIERS_MAX);
-	//printf("%s %s\n", dequeueHead(&deck).suit, dequeueHead(&deck).vname);
 
+	addCardsToDeck(&deck, soldiers, SOLDIERS_MAX);
 	hireFromDeck(&deck, player, 8, &playerCardsNum);
-	printf("%d\n",playerCardsNum);
-	// for (int i = 0; i < PLAYER_MAX; i++)
-	// 	printf("%s %d\n", player[i].suit, player[i].value);
+	displayPlayerCards(player);
+	
+
 	// enqueueHead(&deck, enemies[0]);
 	// enqueueHead(&deck, enemies[1]);
 	// enqueueTail(&deck, enemies[11]);
