@@ -37,32 +37,40 @@ void printCard(struct card *cards, int start, int end)
 
 //从牌堆底部加入
 // 1. 初始化牌堆  2.从弃牌堆heal
-void addCardsToDeck(struct deque *q, struct card *cards, int n)
+void addCardsToDeck(struct deque *deck, struct card *cards, int n)
 {
 	for (int i = 0; i < n; i++) {
-		enqueueTail(q, cards[i]);
+		enqueueTail(deck, cards[i]);
 	}
 }
 
-void hireFromDeck(struct deque *q, struct card *cards, int n, int *playerCardsNum)
+void hireFromDeck(struct deque *deck, struct card *hand, int n, int *handNum)
 {
 	//n为可以插入的手牌数量
-	if (PLAYER_MAX - *playerCardsNum < n) {
-		n = PLAYER_MAX - *playerCardsNum;
+	if (HAND_MAX - *handNum < n) {
+		n = HAND_MAX - *handNum;
 	}
-	for (int i = 0; i < PLAYER_MAX; i++) {
-		if (cards[i].value == 0) {
-			cards[i] = dequeueHead(q);
-			(*playerCardsNum)++;
+	for (int i = 0; i < HAND_MAX; i++) {
+		if (hand[i].value == 0) {
+			hand[i] = dequeueHead(deck);
+			(*handNum)++;
 			n--;
 			if(n == 0) break;
 		}
 	}
 }
 
-void displayPlayerCards(struct card *cards){
-	for (int i = 0; i < PLAYER_MAX; i++)
-		if(cards[i].value != 0) {
-			printf("%s %s\n", cards[i].suit, cards[i].vname);
-		}
+void displayHand(struct card *cards){
+	int cnt = 0;
+	printf("Hand Cards:  ");
+	for (int i = 0; i < HAND_MAX; i++){
+		if(cards[i].value == 0)
+			break;
+		printf("%7s%2s  ", cards[i].suit, cards[i].vname);
+		cnt++;
+	}
+	printf("\nHand No.     ");
+	for(int j = 0; j < cnt; j++){
+		printf("%9d  ", j + 1);
+	}	
 }
