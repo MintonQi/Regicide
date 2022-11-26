@@ -46,6 +46,9 @@ void enqueueTail(struct deque *q, struct card e)
 
 struct card dequeueHead(struct deque *q)
 {
+	if(q->size == 0){
+		printf("Empty deque!!! Cannot dequeueHead!");
+	}
 	struct Node *h = q->head;
 	struct card  e = h->next->data;
 	if (h->next->next) {

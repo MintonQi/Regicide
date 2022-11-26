@@ -44,20 +44,21 @@ void addCardsToDeck(struct deque *deck, struct card *cards, int n)
 	}
 }
 
+int min(int a, int b){
+	if(a < b) 
+		return a;
+	else 
+		return b;
+}
+
 void hireFromDeck(struct deque *deck, struct card *hand, int n, int *handNum)
 {
-	//n为可以插入的手牌数量
-	if (HAND_MAX - *handNum < n) {
-		n = HAND_MAX - *handNum;
-	}
-	for (int i = 0; i < HAND_MAX; i++) {
-		if (hand[i].value == 0) {
-			hand[i] = dequeueHead(deck);
-			(*handNum)++;
-			n--;
-			if(n == 0) break;
-		}
-	}
+	// n为试图插入的手牌数，现缩小为能够插入的手牌数
+	n = min(n, deck->size);// 如果deck牌数不足，缩小n至deck剩余牌数
+	n = min(n, HAND_MAX - *handNum); // 如果手牌空间不足，缩小n至手牌剩余空间
+	for (int i = 0; i < n; i++) // 插入n张牌
+		hand[i + *handNum] = dequeueHead(deck);
+	*handNum += n; // 手牌数加n
 }
 
 void displayHand(struct card *cards){
@@ -72,5 +73,19 @@ void displayHand(struct card *cards){
 	printf("\nHand No.     ");
 	for(int j = 0; j < cnt; j++){
 		printf("%9d  ", j + 1);
-	}	
+	}
+}
+
+struct card *getValidInput(struct card *hand){
+	printf("Choose the card numbers you want to play.\n");
+	printf("(Without spaces between card numbers, and press enter to play.\n");
+	char str[4];
+	struct card *validInput[4];
+	scanf("%4[^\n]s", str);
+
+}
+
+
+struct card *playCards(){
+	
 }

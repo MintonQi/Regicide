@@ -41,7 +41,8 @@ int main()
 	addCardsToDeck(&deck, soldiers, SOLDIERS_MAX);
 	hireFromDeck(&deck, hand, 8, &handNum);
 	displayHand(hand);
-	
+	// getValidInput(hand); 
+	// printf("%s", validInput[0]->vname);
 
 	// enqueueHead(&deck, enemies[0]);
 	// enqueueHead(&deck, enemies[1]);
