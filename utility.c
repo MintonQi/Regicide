@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <ctype.h>
 
 #include "utility.h"
 #include "deque.h"
@@ -61,31 +62,98 @@ void hireFromDeck(struct deque *deck, struct card *hand, int n, int *handNum)
 	*handNum += n; // 手牌数加n
 }
 
-void displayHand(struct card *cards){
-	int cnt = 0;
+void displayHand(struct card *cards, int handNum){
 	printf("Hand Cards:  ");
-	for (int i = 0; i < HAND_MAX; i++){
-		if(cards[i].value == 0)
-			break;
+	for (int i = 0; i < handNum; i++) // print hand cards
 		printf("%7s%2s  ", cards[i].suit, cards[i].vname);
-		cnt++;
-	}
 	printf("\nHand No.     ");
-	for(int j = 0; j < cnt; j++){
+	for(int j = 0; j < handNum; j++) // print hand number
 		printf("%9d  ", j + 1);
-	}
+	printf("\n");
 }
 
-struct card *getValidInput(struct card *hand){
-	printf("Choose the card numbers you want to play.\n");
-	printf("(Without spaces between card numbers, and press enter to play.\n");
-	char str[4];
-	struct card *validInput[4];
-	scanf("%4[^\n]s", str);
+struct card *getValidInput(struct card *hand, struct card *validInput){
+	printf("Choose the hand numbers you want to play:\n");
+	printf("(No spaces between hand numbers, and press enter to play)\n");
+	char inputNumbers[4];
 
+	//scanf("%4[^\n]s", str); // get at most 4 characters ended by '\n'
+	int cnt, isValid = 1; // isValid == 1 means input is valid
+	while(1){
+		for(cnt = 0; cnt < 5; cnt++){ // Get at most 5 chars
+			char c = getchar();
+			if(c == '\n'){
+				if(cnt == 0)
+					isValid = 0;
+				break;
+			}
+			if(cnt == 4 && c != '\n'){ // The 5th char is not '\n'
+				isValid = 0;
+				break;
+			}
+			if(c < '1' || c > '8'){ // invalid input
+				isValid = 0;
+			}
+			else
+				inputNumbers[cnt] = c;
+		}
+
+		if(isValid == 1){
+			// Check if there are repetitive numbers
+			for(int i = 0; i < cnt;i++){ 
+				for(int j = i + 1; j < cnt; j++){
+					if(inputNumbers[i] == inputNumbers[j]){
+						isValid = 0;
+						i = cnt; // end outer loop
+						break;
+					}
+				}
+			}
+		}
+		
+		if(isValid == 1){
+			// Check if the cards combo is valid
+			int comboCardValues[4];
+			int isSame = 1, petNum = 0; // isSame==1 means all the same
+			for(int i = 0; i < cnt; i++){
+				comboCardValues[i] = hand[inputNumbers[i] - '0' - 1].value;
+			}
+			for(int i = 0; i < cnt; i++){ // check if cards values are all the same
+				if(comboCardValues[i] == 1) // count the number of 'A'
+					petNum++;
+				for(int j = i + 1; j < cnt; j++){
+					if(comboCardValues[i] != comboCardValues[j]){
+						isSame = 0;
+					}
+				}
+			}
+			if(isSame == 1){
+				if(comboCardValues[0] * cnt > 10)
+					isValid = 0;
+			}
+			if(isSame == 0){
+				if(petNum < cnt - 1){ // if pet is not enough
+					isValid = 0;
+				}
+			}
+		}
+		
+
+		if(isValid == 1){
+			for(int i = 0; i < cnt; i++){
+				validInput[i] = hand[inputNumbers[i] - '0' - 1];
+			}
+			return validInput;
+		}
+		if(isValid == 0){
+			printf("Invalid input! Please enter a valid combo: \n");
+		}
+		isValid = 1;
+	}
+	return validInput;
 }
 
 
 struct card *playCards(){
-	
+
 }

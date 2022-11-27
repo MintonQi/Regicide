@@ -5,7 +5,10 @@
 
 void shuffle(void *arr, int size);
 void printCard(struct card *cards, int start, int end);
-void addCardsToDeck(struct deque *q, struct card *cards, int n);
-void hireFromDeck(struct deque *q, struct card *cards, int n, int *playerCardsNum);
-void displayHand(struct card *cards);
+void addCardsToDeck(struct deque *deck, struct card *cards, int n);
+int min(int a, int b);
+void hireFromDeck(struct deque *deck, struct card *cards, int n, int *handNum);
+void displayHand(struct card *cards, int handNum);
+struct card *getValidInput(struct card *hand, struct card *validInput);
+struct card *playCards();
 #endif
