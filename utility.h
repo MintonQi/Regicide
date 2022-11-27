@@ -9,6 +9,6 @@ void addCardsToDeck(struct deque *deck, struct card *cards, int n);
 int min(int a, int b);
 void hireFromDeck(struct deque *deck, struct card *cards, int n, int *handNum);
 void displayHand(struct card *cards, int handNum);
-struct card *getValidInput(struct card *hand, struct card *validInput);
+int *getValidInput(struct card *hand, int *validInput);
 struct card *playCards();
 #endif

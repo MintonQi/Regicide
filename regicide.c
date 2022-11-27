@@ -42,8 +42,11 @@ int main()
 	hireFromDeck(&deck, hand, 8, &handNum);
 	displayHand(hand, handNum);
 
-	struct card validInput[4];
-	printf("%s\n",getValidInput(hand, validInput)[0].vname); 
+	int validInput[4] = {0};
+	getValidInput(hand, validInput);
+	for(int i = 0; i < 4; i++){
+		printf("%d", validInput[i]);
+	}
 
 	// enqueueHead(&deck, enemies[0]);
 	// enqueueHead(&deck, enemies[1]);

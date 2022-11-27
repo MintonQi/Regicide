@@ -72,7 +72,7 @@ void displayHand(struct card *cards, int handNum){
 	printf("\n");
 }
 
-struct card *getValidInput(struct card *hand, struct card *validInput){
+int *getValidInput(struct card *hand, int *validInput){
 	printf("Choose the hand numbers you want to play:\n");
 	printf("(No spaces between hand numbers, and press enter to play)\n");
 	char inputNumbers[4];
@@ -138,12 +138,12 @@ struct card *getValidInput(struct card *hand, struct card *validInput){
 			}
 		}
 		
-
+		// The input is valid!
 		if(isValid == 1){
-			for(int i = 0; i < cnt; i++){
-				validInput[i] = hand[inputNumbers[i] - '0' - 1];
+			for(int i = 0; i < cnt; i++){ 
+				validInput[i] = inputNumbers[i] - '0';
 			}
-			return validInput;
+			return;
 		}
 		if(isValid == 0){
 			printf("Invalid input! Please enter a valid combo: \n");
@@ -154,6 +154,6 @@ struct card *getValidInput(struct card *hand, struct card *validInput){
 }
 
 
-struct card *playCards(){
-
+struct card *playCards(int *validInput){
+	
 }

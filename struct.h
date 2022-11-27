@@ -11,6 +11,12 @@ struct card {
 	int   value;
 };
 
+struct enemy {
+	int atk;
+	int hp;
+	char *suit;
+};
+
 struct Node {
 	struct card  data;
 	struct Node *next;
