@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
-#include <ctype.h>
 
 #include "utility.h"
 #include "deque.h"
@@ -70,6 +69,22 @@ void displayHand(struct card *cards, int handNum){
 	for(int j = 0; j < handNum; j++) // print hand number
 		printf("%9d  ", j + 1);
 	printf("\n");
+}
+
+void rearrangeCards(struct card *cards){
+	int slow = 0;
+	int fast = 0;
+	for(int i = 0; i < HAND_MAX; i++){
+		if(!cards[i].value){
+			cards[slow] = cards[i];
+			slow++;
+		}
+		fast++;
+	}
+	for(int i = slow; i < fast; i++){
+		cards[i].value = 0;
+	}
+	
 }
 
 int *getValidInput(struct card *hand, int *validInput){
@@ -151,9 +166,4 @@ int *getValidInput(struct card *hand, int *validInput){
 		isValid = 1;
 	}
 	return validInput;
-}
-
-
-struct card *playCards(int *validInput){
-	
 }

@@ -15,14 +15,13 @@ int main()
 	
 	srand((unsigned int)time(NULL));
 
-	//准备怪物队列
+	//怪物队列
 	printCard(enemies, 11, 13);
-
 	shuffle(enemies, 4);
 	shuffle(enemies + 4, 4);
 	shuffle(enemies + 8, 4);
 
-	
+	//手牌队列
 	printCard(soldiers, 1, 10);
 	shuffle(soldiers, SOLDIERS_MAX);
 
@@ -37,16 +36,18 @@ int main()
 
 	//准备牌堆
 	struct deque deck = createDeque();
-
 	addCardsToDeck(&deck, soldiers, SOLDIERS_MAX);
 	hireFromDeck(&deck, hand, 8, &handNum);
-	displayHand(hand, handNum);
+	displayHand(hand,handNum);
 
-	int validInput[4] = {0};
-	getValidInput(hand, validInput);
-	for(int i = 0; i < 4; i++){
-		printf("%d", validInput[i]);
-	}
+	//player[3].value = 0;
+	//player[6].value = 0;
+
+	rearrangeCards(hand);
+	displayHand(hand,handNum);
+	
+	
+
 
 	// enqueueHead(&deck, enemies[0]);
 	// enqueueHead(&deck, enemies[1]);

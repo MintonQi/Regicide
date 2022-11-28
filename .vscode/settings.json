@@ -2,19 +2,12 @@
     "files.associations": {
         "stdlib.h": "c",
         "regicide.h": "c",
-        "time.h": "c",
-        "stdio.h": "c",
-        "struct.h": "c"
+        "time.h": "c"
     },
     "makefile.launchConfigurations": [
         {
             "cwd": "/home/qikongjia/regicide",
             "binaryPath": "/home/qikongjia/regicide/regicide",
-            "binaryArgs": []
-        },
-        {
-            "cwd": "f:\\C_Linux\\C",
-            "binaryPath": "f:\\C_Linux\\C\\regicide",
             "binaryArgs": []
         }
     ]

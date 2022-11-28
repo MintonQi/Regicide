@@ -62,4 +62,3 @@ struct card dequeueHead(struct deque *q)
 	return e;
 }
 
-
