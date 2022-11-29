@@ -23,4 +23,9 @@ struct deque {
 	int size;
 };
 
+struct enemy{
+	struct card enemy_card;
+	int health;
+	int attack;
+};
 #endif
