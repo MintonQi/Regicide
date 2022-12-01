@@ -104,60 +104,63 @@ void rearrangeCards(struct card *cards)
 		}
 		fast++;
 	}
-	printf("%d %d\n", slow, fast);
 	for (int i = slow; i < fast; i++) {
 		cards[i].value = 0;
 	}
 }
 
+// 可以单张牌 可以combo但是不超过10 可以一张宠物牌+一张手牌 最多2222 四张牌
 int *getValidInput(struct card *hand, int *validInput)
 {
 	printf("Choose the hand numbers you want to play:\n");
 	printf("(No spaces between hand numbers, and press enter to play)\n");
 	char inputNumbers[4];
 
-	// scanf("%4[^\n]s", str); // get at most 4 characters ended by '\n'
-	int cnt, isValid = 1; // isValid == 1 means input is valid
+	int cnt, isValid = 1; // isValid为1 代表valid
 	while (1) {
-		for (cnt = 0; cnt < 5; cnt++) { // Get at most 5 chars
+		// 输入index步骤是否valid
+		for (cnt = 0; cnt < 6; cnt++) { // 加上'\n'最多6个字符
 			char c = getchar();
-			if (c == '\n') {
-				if (cnt == 0)
+			if (c == '\n') {  //  接收到回车后break
+				if (cnt == 0) // 没有输入直接回车的是invalid
 					isValid = 0;
 				break;
 			}
-			if (cnt == 4 && c != '\n') { // The 5th char is not '\n'
+			if (cnt == 5 && c != '\n') { //  超出数量限制
 				isValid = 0;
 				break;
 			}
 			if (c < '1' || c > '8') { // invalid input
-				isValid = 0;
+				isValid = 0;          // 但是不能立刻break 因为要等待回车
+				                      // break;
 			} else
 				inputNumbers[cnt] = c;
 		}
 
+		// 判断输入index是否重复
 		if (isValid == 1) {
-			// Check if there are repetitive numbers
 			for (int i = 0; i < cnt; i++) {
 				for (int j = i + 1; j < cnt; j++) {
 					if (inputNumbers[i] == inputNumbers[j]) {
 						isValid = 0;
-						i       = cnt; // end outer loop
-						break;
+						i       = cnt; // 跳出外层循环
+						break;         // 跳出内层循环
 					}
 				}
 			}
 		}
 
+		// 判断combo是否合理： 1. 都相同  2. 有宠物牌
 		if (isValid == 1) {
-			// Check if the cards combo is valid
-			int comboCardValues[4];
-			int isSame = 1, petNum = 0; // isSame==1 means all the same
+			int comboCardValues[5];  // combo最多五位
+			int isSame = 1, petNum = 0; // isSame==1 代表数值相同
+		
 			for (int i = 0; i < cnt; i++) {
 				comboCardValues[i] = hand[inputNumbers[i] - '0' - 1].value;
 			}
-			for (int i = 0; i < cnt; i++) {  // check if cards values are all the same
-				if (comboCardValues[i] == 1) // count the number of 'A'
+
+			for (int i = 0; i < cnt; i++) {  
+				if (comboCardValues[i] == 1) // 有宠物
 					petNum++;
 				for (int j = i + 1; j < cnt; j++) {
 					if (comboCardValues[i] != comboCardValues[j]) {
