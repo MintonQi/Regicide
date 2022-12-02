@@ -39,6 +39,11 @@ int main()
 	displayHand(hand, handNum);
 
 	rearrangeCards(hand);
+	int validInput[5];
+	int input_size = getValidInput(hand, validInput);
+	for(int i = 0; i < input_size; i++){
+		printf("%d ", validInput[i]);
+	}
 
 	return 0;
 }

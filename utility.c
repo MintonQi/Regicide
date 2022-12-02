@@ -110,15 +110,15 @@ void rearrangeCards(struct card *cards)
 }
 
 // 可以单张牌 可以combo但是不超过10 可以一张宠物牌+一张手牌 最多2222 四张牌
-int *getValidInput(struct card *hand, int *validInput)
+int getValidInput(struct card *hand, int *validInput)
 {
 	printf("Choose the hand numbers you want to play:\n");
 	printf("(No spaces between hand numbers, and press enter to play)\n");
 	char inputNumbers[4];
 
-	int cnt;  // isValid为1 代表valid
+	int cnt;  
 	while (1) {
-		int isValid = 1;
+		int isValid = 1; // isValid为1 代表valid
 		// 输入的index是否valid
 		for (cnt = 0; cnt < 5; cnt++) { // 加上'\n'最多5个字符
 			char c = getchar();
@@ -182,10 +182,11 @@ int *getValidInput(struct card *hand, int *validInput)
 			for (int i = 0; i < cnt; i++) {
 				validInput[i] = inputNumbers[i] - '0';
 			}
+			return cnt;
 		}
 		else {
 			printf("Invalid input! Please enter a valid combo: \n");
 		}
 	}
-	return validInput;
+	return cnt;
 }
