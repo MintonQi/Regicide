@@ -11,8 +11,8 @@ int main()
 	struct enemy enemies[ENEMIES_MAX];
 	struct card  soldiers[SOLDIERS_MAX];
 	struct card  hand[HAND_MAX]    = { 0 };
-	struct card  buffer[HAND_MAX]  = { 0 };
-	struct card  discard[HAND_MAX] = { 0 };
+	struct card  buffer[SOLDIERS_MAX]  = { 0 };
+	struct card  discard[SOLDIERS_MAX] = { 0 };
 	int          handNum = 0, enemyIndex = 0, discardNum = 0;
 	int          validInput[INPUT_MAX];
 
@@ -47,14 +47,14 @@ int main()
 	// 	discardNum++;
 	// }
 	// displayHand(discard,discardNum);
-	healFromDiscard(&deck,discard,5,&discardNum);
+	// healFromDiscard(&deck,discard,5,&discardNum);
 	// displayHand(discard,discardNum);
 
-	//int cnt = getValidInput(hand, validInput);
-	// printf("%d\n", cnt);
-	// for(int i=0; i < cnt; i++){
-	// 	printf("%d ",validInput[i]);
-	// }
+	int cnt = getValidInput(hand, validInput);
+	printf("%d\n", cnt);
+	for(int i=0; i < cnt; i++){
+		printf("%d ",validInput[i]);
+	}
 	rearrangeCards(hand);
 
 	return 0;

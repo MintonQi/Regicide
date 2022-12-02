@@ -140,26 +140,25 @@ int getValidInput(struct card *hand, int *validInput)
 	printf("(No spaces between hand numbers, and press enter to play)\n");
 	char inputNumbers[4];
 
-	int cnt;
 	while (1) {
-		int isValid = 1; // isValid为1 代表valid
-
+		int isValid = 1, cnt = 0; // isValid为1 代表valid
 		// 输入的index是否valid
-		for (cnt = 0; cnt < 5; cnt++) { // 加上'\n'最多5个字符
+		while (1) { // 加上'\n'最多5个字符
 			char c = getchar();
 			if (c == '\n') {  //  接收到回车后break
 				if (cnt == 0) // 没有输入直接回车的是invalid
 					isValid = 0;
 				break;
 			}
-			if (cnt == 5 && c != '\n') { //  超出数量限制
+			if (cnt >= 5) { //  超出数量限制
 				isValid = 0;
-				break;
+				continue;
 			}
 			if (c < '1' || c > '8') { // invalid input
 				isValid = 0;          // 但是不能立刻break 因为要等待回车
 			} else
 				inputNumbers[cnt] = c;
+			cnt++;
 		}
 
 		// 判断输入index是否重复
@@ -212,6 +211,7 @@ int getValidInput(struct card *hand, int *validInput)
 			printf("Invalid input! Please enter a valid combo: \n");
 		}
 	}
+	return -1;
 }
 
 void attackEnemy(struct enemy *currentEnemy, int *validInput, struct card *hand){
