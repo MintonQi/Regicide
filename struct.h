@@ -4,6 +4,7 @@
 #define HAND_MAX 8
 #define ENEMIES_MAX 12
 #define SOLDIERS_MAX 40
+#define INPUT_MAX 4
 
 struct card {
 	char *suit;

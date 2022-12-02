@@ -12,6 +12,7 @@ int main()
 	struct card  soldiers[SOLDIERS_MAX];
 	struct card  hand[HAND_MAX] = { 0 };
 	int          handNum        = 0;
+	int validInput[INPUT_MAX]; 
 
 	srand((unsigned int)time(NULL));
 
@@ -38,6 +39,11 @@ int main()
 	hireFromDeck(&deck, hand, 8, &handNum);
 	displayHand(hand, handNum);
 
+	int cnt = getValidInput(hand,validInput);
+	printf("%d\n", cnt);
+	for(int i=0; i < cnt; i++){
+		printf("%d ",validInput[i]);
+	}
 	rearrangeCards(hand);
 
 	return 0;
