@@ -64,6 +64,22 @@ void addCardsToDeck(struct deque *deck, struct card *cards, int n)
 	}
 }
 
+void rearrangeCards(struct card *cards)
+{
+	int slow = 0;
+	int fast = 0;
+	for (int i = 0; i < HAND_MAX; i++) {
+		if (cards[i].value != 0) {
+			cards[slow] = cards[i];
+			slow++;
+		}
+		fast++;
+	}
+	for (int i = slow; i < fast; i++) {
+		cards[i].value = 0;
+	}
+}
+
 int min(int a, int b)
 {
 	if (a < b)
@@ -82,32 +98,40 @@ void hireFromDeck(struct deque *deck, struct card *hand, int n, int *handNum)
 	*handNum += n; // 手牌数加n
 }
 
+void healFromDiscard(struct deque *deck, struct card *discard, int n, int *discardNum)
+{
+	shuffle(discard, *discardNum);		// 洗弃牌堆
+	n = min(n, *discardNum);				// n为能heal的牌数
+
+	for (int i = 0; i < n; i++) {		// 将牌插入牌堆底部 之后被设为0
+		enqueueTail(deck, discard[i]);
+		discard[i].value = 0;
+		(*discardNum)--;
+	}
+	printf("%d\n", *discardNum);
+	rearrangeCards(discard);
+}
+
 void displayHand(struct card *cards, int handNum)
 {
-	printf("Hand Cards:  ");
+	printf("Hand Cards:   ");
 	for (int i = 0; i < handNum; i++) // print hand cards
 		printf("%7s%2s  ", cards[i].suit, cards[i].vname);
-	printf("\nHand No.     ");
+	printf("\nHand No.      ");
 	for (int j = 0; j < handNum; j++) // print hand number
 		printf("%9d  ", j + 1);
 	printf("\n");
 }
 
-void rearrangeCards(struct card *cards)
+void displayEnemy(struct enemy currentEnemy)
 {
-	int slow = 0;
-	int fast = 0;
-	for (int i = 0; i < HAND_MAX; i++) {
-		if (cards[i].value != 0) {
-			cards[slow] = cards[i];
-			slow++;
-		}
-		fast++;
-	}
-	for (int i = slow; i < fast; i++) {
-		cards[i].value = 0;
-	}
+	printf("Current Enemy:%7s%2s\n", currentEnemy.enemy_card.suit,
+	       currentEnemy.enemy_card.vname);
+	printf("Attack: %d\n", currentEnemy.attack);
+	printf("Health: %d\n", currentEnemy.health);
 }
+
+
 
 // 可以单张牌 可以combo但是不超过10 可以一张宠物牌+一张手牌 最多2222 四张牌
 int getValidInput(struct card *hand, int *validInput)
@@ -116,9 +140,10 @@ int getValidInput(struct card *hand, int *validInput)
 	printf("(No spaces between hand numbers, and press enter to play)\n");
 	char inputNumbers[4];
 
-	int cnt;  
+	int cnt;
 	while (1) {
 		int isValid = 1; // isValid为1 代表valid
+
 		// 输入的index是否valid
 		for (cnt = 0; cnt < 5; cnt++) { // 加上'\n'最多5个字符
 			char c = getchar();
@@ -183,10 +208,12 @@ int getValidInput(struct card *hand, int *validInput)
 				validInput[i] = inputNumbers[i] - '0';
 			}
 			return cnt;
-		}
-		else {
+		} else {
 			printf("Invalid input! Please enter a valid combo: \n");
 		}
 	}
-	return cnt;
+}
+
+void attackEnemy(struct enemy *currentEnemy, int *validInput, struct card *hand){
+	
 }

@@ -10,9 +10,11 @@ int main()
 	struct card  enemies_cards[ENEMIES_MAX];
 	struct enemy enemies[ENEMIES_MAX];
 	struct card  soldiers[SOLDIERS_MAX];
-	struct card  hand[HAND_MAX] = { 0 };
-	int          handNum        = 0;
-	int validInput[INPUT_MAX]; 
+	struct card  hand[HAND_MAX]    = { 0 };
+	struct card  buffer[HAND_MAX]  = { 0 };
+	struct card  discard[HAND_MAX] = { 0 };
+	int          handNum = 0, enemyIndex = 0, discardNum = 0;
+	int          validInput[INPUT_MAX];
 
 	srand((unsigned int)time(NULL));
 
@@ -37,19 +39,23 @@ int main()
 	struct deque deck = createDeque();
 	addCardsToDeck(&deck, soldiers, SOLDIERS_MAX);
 	hireFromDeck(&deck, hand, 8, &handNum);
+	//displayEnemy(enemies[enemyIndex]);
 	displayHand(hand, handNum);
 
-	int cnt = getValidInput(hand,validInput);
-	printf("%d\n", cnt);
-	for(int i=0; i < cnt; i++){
-		printf("%d ",validInput[i]);
-	}
+	// for(int i = 0;i<handNum;i++){
+	// 	discard[i] = hand[i];
+	// 	discardNum++;
+	// }
+	// displayHand(discard,discardNum);
+	healFromDiscard(&deck,discard,5,&discardNum);
+	// displayHand(discard,discardNum);
+
+	//int cnt = getValidInput(hand, validInput);
+	// printf("%d\n", cnt);
+	// for(int i=0; i < cnt; i++){
+	// 	printf("%d ",validInput[i]);
+	// }
 	rearrangeCards(hand);
-	int validInput[5];
-	int input_size = getValidInput(hand, validInput);
-	for(int i = 0; i < input_size; i++){
-		printf("%d ", validInput[i]);
-	}
 
 	return 0;
 }
