@@ -116,10 +116,11 @@ int *getValidInput(struct card *hand, int *validInput)
 	printf("(No spaces between hand numbers, and press enter to play)\n");
 	char inputNumbers[4];
 
-	int cnt, isValid = 1; // isValid为1 代表valid
+	int cnt;  // isValid为1 代表valid
 	while (1) {
-		// 输入index步骤是否valid
-		for (cnt = 0; cnt < 6; cnt++) { // 加上'\n'最多6个字符
+		int isValid = 1;
+		// 输入的index是否valid
+		for (cnt = 0; cnt < 5; cnt++) { // 加上'\n'最多5个字符
 			char c = getchar();
 			if (c == '\n') {  //  接收到回车后break
 				if (cnt == 0) // 没有输入直接回车的是invalid
@@ -132,7 +133,6 @@ int *getValidInput(struct card *hand, int *validInput)
 			}
 			if (c < '1' || c > '8') { // invalid input
 				isValid = 0;          // 但是不能立刻break 因为要等待回车
-				                      // break;
 			} else
 				inputNumbers[cnt] = c;
 		}
@@ -150,19 +150,17 @@ int *getValidInput(struct card *hand, int *validInput)
 			}
 		}
 
-		// 判断combo是否合理： 1. 都相同  2. 有宠物牌
+		// 判断combo是否valid 1. 连招 2. 宠物牌
 		if (isValid == 1) {
-			int comboCardValues[5];  // combo最多五位
 			int isSame = 1, petNum = 0; // isSame==1 代表数值相同
-		
+			int comboCardValues[4];     // 最多出四张牌
 			for (int i = 0; i < cnt; i++) {
 				comboCardValues[i] = hand[inputNumbers[i] - '0' - 1].value;
 			}
-
-			for (int i = 0; i < cnt; i++) {  
+			for (int i = 0; i < cnt; i++) {
 				if (comboCardValues[i] == 1) // 有宠物
 					petNum++;
-				for (int j = i + 1; j < cnt; j++) {
+				for (int j = i + 1; j < cnt; j++) { // 数值是否相同
 					if (comboCardValues[i] != comboCardValues[j]) {
 						isSame = 0;
 					}
@@ -173,23 +171,21 @@ int *getValidInput(struct card *hand, int *validInput)
 					isValid = 0;
 			}
 			if (isSame == 0) {
-				if (petNum < cnt - 1) { // if pet is not enough
+				if ((cnt != 2) || (petNum != 1)) {
 					isValid = 0;
 				}
 			}
 		}
 
-		// The input is valid!
+		// valid input
 		if (isValid == 1) {
 			for (int i = 0; i < cnt; i++) {
 				validInput[i] = inputNumbers[i] - '0';
 			}
-			return;
 		}
-		if (isValid == 0) {
+		else {
 			printf("Invalid input! Please enter a valid combo: \n");
 		}
-		isValid = 1;
 	}
 	return validInput;
 }
