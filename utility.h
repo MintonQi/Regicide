@@ -11,5 +11,5 @@ int min(int a, int b);
 void hireFromDeck(struct deque *deck, struct card *hand, int n, int *handNum);
 void displayHand(struct card *cards, int handNum);
 void rearrangeCards(struct card *cards);
-int getValidInput(struct card *hand, int *validInput);
+int getValidInput(struct card *cards, int *validInput);
 #endif

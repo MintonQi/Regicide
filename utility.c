@@ -118,8 +118,7 @@ int getValidInput(struct card *hand, int *validInput)
 
 	int cnt;  
 	while (1) {
-		int isValid = 1;	// isValid为1 代表valid
-		
+		int isValid = 1; // isValid为1 代表valid
 		// 输入的index是否valid
 		for (cnt = 0; cnt < 5; cnt++) { // 加上'\n'最多5个字符
 			char c = getchar();
@@ -189,5 +188,5 @@ int getValidInput(struct card *hand, int *validInput)
 			printf("Invalid input! Please enter a valid combo: \n");
 		}
 	}
-	//return cnt;
+	return cnt;
 }
