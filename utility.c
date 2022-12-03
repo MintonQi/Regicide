@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <string.h>
 
 #include "utility.h"
 #include "deque.h"
@@ -12,17 +13,17 @@ char *suits[]  = { "Spade", "Club", "Heart", "Diamond" };
 //洗牌  1. 敌人队列  2. 弃牌堆
 void shuffle(void *arr, int size)
 {
-	struct card *cards = (struct card *)arr;
+	card *cards = (card *)arr;
 
 	for (int i = 0; i < size; i++) {
 		int         j    = rand() % size;
-		struct card temp = cards[j];
+		card temp = cards[j];
 		cards[j]         = cards[i];
 		cards[i]         = temp;
 	}
 }
 
-void printCard(struct card *cards, int start, int end)
+void printCard(card *cards, int start, int end)
 {
 	int count = 0;
 	for (int i = start; i <= end; i++) {
@@ -35,7 +36,7 @@ void printCard(struct card *cards, int start, int end)
 	}
 }
 
-void castleDeck(struct card *enemies_cards, struct enemy *enemies)
+void castleDeck(card *enemies_cards, enemy *enemies)
 {
 	printCard(enemies_cards, 11, 13);
 	shuffle(enemies_cards, 4);
@@ -57,14 +58,14 @@ void castleDeck(struct card *enemies_cards, struct enemy *enemies)
 
 //从牌堆底部加入
 // 1. 初始化牌堆  2.从弃牌堆heal
-void addCardsToDeck(struct deque *deck, struct card *cards, int n)
+void addCardsToDeck(deque *deck, card *cards, int n)
 {
 	for (int i = 0; i < n; i++) {
 		enqueueTail(deck, cards[i]);
 	}
 }
 
-void rearrangeCards(struct card *cards)
+void rearrangeCards(card *cards)
 {
 	int slow = 0;
 	int fast = 0;
@@ -88,7 +89,7 @@ int min(int a, int b)
 		return b;
 }
 
-void hireFromDeck(struct deque *deck, struct card *hand, int n, int *handNum)
+void hireFromDeck(deque *deck, card *hand, int n, int *handNum)
 {
 	// n为试图插入的手牌数，现缩小为能够插入的手牌数
 	n = min(n, deck->size);          // 如果deck牌数不足，缩小n至deck剩余牌数
@@ -98,7 +99,7 @@ void hireFromDeck(struct deque *deck, struct card *hand, int n, int *handNum)
 	*handNum += n; // 手牌数加n
 }
 
-void healFromDiscard(struct deque *deck, struct card *discard, int n, int *discardNum)
+void healFromDiscard(deque *deck, card *discard, int n, int *discardNum)
 {
 	shuffle(discard, *discardNum);		// 洗弃牌堆
 	n = min(n, *discardNum);				// n为能heal的牌数
@@ -112,7 +113,7 @@ void healFromDiscard(struct deque *deck, struct card *discard, int n, int *disca
 	rearrangeCards(discard);
 }
 
-void displayHand(struct card *cards, int handNum)
+void displayHand(card *cards, int handNum)
 {
 	printf("Hand Cards:   ");
 	for (int i = 0; i < handNum; i++) // print hand cards
@@ -123,7 +124,7 @@ void displayHand(struct card *cards, int handNum)
 	printf("\n");
 }
 
-void displayEnemy(struct enemy currentEnemy)
+void displayEnemy(enemy currentEnemy)
 {
 	printf("Current Enemy:%7s%2s\n", currentEnemy.enemy_card.suit,
 	       currentEnemy.enemy_card.vname);
@@ -134,7 +135,7 @@ void displayEnemy(struct enemy currentEnemy)
 
 
 // 可以单张牌 可以combo但是不超过10 可以一张宠物牌+一张手牌 最多2222 四张牌
-int getValidInput(struct card *hand, int *validInput)
+int getValidInput(card *hand, int *validInput)
 {
 	printf("Choose the hand numbers you want to play:\n");
 	printf("(No spaces between hand numbers, and press enter to play)\n");
@@ -214,6 +215,24 @@ int getValidInput(struct card *hand, int *validInput)
 	return -1;
 }
 
-void attackEnemy(struct enemy *currentEnemy, int *validInput, struct card *hand){
-	
+void activateRedSuitPower(card *hand, int *validInput, card *discard, card *deck){
+	int hasHeart = 0, hasDiamond = 0;
+	for(int i = 0; i < INPUT_MAX; i++){
+		if(strcmp(hand[validInput[i]].suit, "Heart") == 0){
+			hasHeart = 1;
+		}
+		else if(strcmp(hand[validInput[i]].suit, "Diamond") == 0){
+			hasDiamond = 1;
+		}
+	}
+	if(hasHeart + hasDiamond == 0)
+		return;
+	// total num
+
+}
+
+
+// return 0 if enemy is alive, 1 if overkilled, 2 if damage equal to hp 
+int attackEnemy(enemy *currentEnemy, int *validInput, card *hand){
+
 }

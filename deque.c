@@ -4,22 +4,22 @@
 #include "deque.h"
 
 
-struct deque createDeque()
+deque createDeque()
 {
-	struct deque q;
-	q.head = q.tail = (struct Node *)malloc(sizeof(struct Node));
+	deque q;
+	q.head = q.tail = (node *)malloc(sizeof(node));
 	// create dummy head
-	q.head->data = (struct card){ "0", "0", 0 };
+	q.head->data = (card){ "0", "0", 0 };
 	q.head->next = NULL;
 	q.tail       = q.head;
     q.size = 0;
 	return q;
 }
 
-void enqueueHead(struct deque *q, struct card e)
+void enqueueHead(deque *q, card e)
 {
-	struct Node *ptr = (struct Node *)malloc(sizeof(struct Node));
-	struct Node *h   = q->head;
+	node *ptr = (node *)malloc(sizeof(node));
+	node *h   = q->head;
 	ptr->data        = e;
 	ptr->prev        = h;
 	ptr->next        = h->next;
@@ -33,9 +33,9 @@ void enqueueHead(struct deque *q, struct card e)
     q->size++;
 }
 
-void enqueueTail(struct deque *q, struct card e)
+void enqueueTail(deque *q, card e)
 {
-	struct Node *ptr = (struct Node *)malloc(sizeof(struct Node));
+	node *ptr = (node *)malloc(sizeof(node));
 	ptr->data        = e;
 	ptr->prev        = q->tail;
 	ptr->next        = NULL;
@@ -44,13 +44,13 @@ void enqueueTail(struct deque *q, struct card e)
     q->size++;
 }
 
-struct card dequeueHead(struct deque *q)
+card dequeueHead(deque *q)
 {
 	if(q->size == 0){
 		printf("Empty deque!!! Cannot dequeueHead!");
 	}
-	struct Node *h = q->head;
-	struct card  e = h->next->data;
+	node *h = q->head;
+	card  e = h->next->data;
 	if (h->next->next) {
 		h->next->next->prev = h;
 		h->next             = h->next->next;
