@@ -13,8 +13,8 @@ int main()
 	card  hand[HAND_MAX]    = { 0 };
 	card  buffer[SOLDIERS_MAX]  = { 0 };
 	card  discard[SOLDIERS_MAX] = { 0 };
-	int          handNum = 0, enemyIndex = 0, discardNum = 0;
-	int          validInput[INPUT_MAX];
+	int   handNum = 0, enemyIndex = 0, discardNum = 0;
+	int   validInput[INPUT_MAX];
 
 	srand((unsigned int)time(NULL));
 

@@ -137,9 +137,13 @@ void displayEnemy(enemy currentEnemy)
 // 可以单张牌 可以combo但是不超过10 可以一张宠物牌+一张手牌 最多2222 四张牌
 int getValidInput(card *hand, int *validInput)
 {
+	// initialize/reset validInput.
+	for(int i = 0; i < INPUT_MAX; i++){
+		validInput[i] = 0;
+	}
 	printf("Choose the hand numbers you want to play:\n");
 	printf("(No spaces between hand numbers, and press enter to play)\n");
-	char inputNumbers[4];
+	char inputNumbers[INPUT_MAX];
 
 	while (1) {
 		int isValid = 1, cnt = 0; // isValid为1 代表valid
@@ -218,6 +222,7 @@ int getValidInput(card *hand, int *validInput)
 void activateRedSuitPower(card *hand, int *validInput, card *discard, card *deck){
 	int hasHeart = 0, hasDiamond = 0;
 	for(int i = 0; i < INPUT_MAX; i++){
+		
 		if(strcmp(hand[validInput[i]].suit, "Heart") == 0){
 			hasHeart = 1;
 		}
