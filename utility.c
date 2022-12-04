@@ -16,10 +16,10 @@ void shuffle(void *arr, int size)
 	card *cards = (card *)arr;
 
 	for (int i = 0; i < size; i++) {
-		int         j    = rand() % size;
+		int  j    = rand() % size;
 		card temp = cards[j];
-		cards[j]         = cards[i];
-		cards[i]         = temp;
+		cards[j]  = cards[i];
+		cards[i]  = temp;
 	}
 }
 
@@ -89,6 +89,14 @@ int min(int a, int b)
 		return b;
 }
 
+int max(int a, int b)
+{
+	if (a > b)
+		return a;
+	else
+		return b;
+}
+
 void hireFromDeck(deque *deck, card *hand, int n, int *handNum)
 {
 	// n为试图插入的手牌数，现缩小为能够插入的手牌数
@@ -101,10 +109,10 @@ void hireFromDeck(deque *deck, card *hand, int n, int *handNum)
 
 void healFromDiscard(deque *deck, card *discard, int n, int *discardNum)
 {
-	shuffle(discard, *discardNum);		// 洗弃牌堆
-	n = min(n, *discardNum);				// n为能heal的牌数
+	shuffle(discard, *discardNum); // 洗弃牌堆
+	n = min(n, *discardNum);       // n为能heal的牌数
 
-	for (int i = 0; i < n; i++) {		// 将牌插入牌堆底部 之后被设为0
+	for (int i = 0; i < n; i++) { // 将牌插入牌堆底部 之后被设为0
 		enqueueTail(deck, discard[i]);
 		discard[i].value = 0;
 		(*discardNum)--;
@@ -132,13 +140,11 @@ void displayEnemy(enemy currentEnemy)
 	printf("Health: %d\n", currentEnemy.health);
 }
 
-
-
 // 可以单张牌 可以combo但是不超过10 可以一张宠物牌+一张手牌 最多2222 四张牌
 int getValidInput(card *hand, int *validInput)
 {
 	// initialize/reset validInput.
-	for(int i = 0; i < INPUT_MAX; i++){
+	for (int i = 0; i < INPUT_MAX; i++) {
 		validInput[i] = 0;
 	}
 	printf("Choose the hand numbers you want to play:\n");
@@ -209,7 +215,7 @@ int getValidInput(card *hand, int *validInput)
 		// valid input
 		if (isValid == 1) {
 			for (int i = 0; i < cnt; i++) {
-				validInput[i] = inputNumbers[i] - '0';
+				validInput[i] = inputNumbers[i] - '0' - 1;
 			}
 			return cnt;
 		} else {
@@ -219,25 +225,52 @@ int getValidInput(card *hand, int *validInput)
 	return -1;
 }
 
-void activateRedSuitPower(card *hand, int *validInput, card *discard, card *deck){
-	int hasHeart = 0, hasDiamond = 0;
-	for(int i = 0; i < INPUT_MAX; i++){
-		
-		if(strcmp(hand[validInput[i]].suit, "Heart") == 0){
+void activateRedSuitPower(card *hand, int *handNum, int *validInput, int inputNum,
+                          card *discard, int *discardNum, deque *deck)
+{
+	int valueSum = 0, hasHeart = 0, hasDiamond = 0; // value is 1 means input has heart/diamond
+	for (int i = 0; i < inputNum; i++) {            // record heart/diamond and get sum of value
+		if (strcmp(hand[validInput[i]].suit, "Heart") == 0) {
 			hasHeart = 1;
-		}
-		else if(strcmp(hand[validInput[i]].suit, "Diamond") == 0){
+		} else if (strcmp(hand[validInput[i]].suit, "Diamond") == 0) {
 			hasDiamond = 1;
 		}
+		valueSum += hand[validInput[i]].value;
 	}
-	if(hasHeart + hasDiamond == 0)
+	if (hasHeart + hasDiamond == 0)
 		return;
-	// total num
 
+	// move cards
+	if (hasHeart)
+		healFromDiscard(deck, discard, valueSum, discardNum);
+	if (hasDiamond)
+		hireFromDeck(deck, hand, valueSum, handNum);
 }
 
+// return 0 if enemy is alive, 1 if overkilled, 2 if damage equal to hp
+int attackEnemy(enemy *currentEnemy, int *validInput, int inputNum, card *hand)
+{
+	int valueSum = 0, hasClub = 0, hasSpade = 0; // value is 1 means input has heart/diamond
+	for (int i = 0; i < inputNum; i++) {         // record club/spade and get sum of value
+		if (strcmp(hand[validInput[i]].suit, "Heart") == 0) {
+			hasClub = 1;
+		} else if (strcmp(hand[validInput[i]].suit, "Diamond") == 0) {
+			hasSpade = 1;
+		}
+		valueSum += hand[validInput[i]].value;
+	}
 
-// return 0 if enemy is alive, 1 if overkilled, 2 if damage equal to hp 
-int attackEnemy(enemy *currentEnemy, int *validInput, card *hand){
-
+	// deal damage and reduce atk
+	if (hasClub) 
+		valueSum *= 2;
+	int hp = currentEnemy->health;
+	if (valueSum > hp)
+		return 1;
+	else if (valueSum == hp)
+		return 2;
+	else
+		currentEnemy->health -= valueSum;
+	if (hasSpade)
+		currentEnemy->attack = max(currentEnemy->attack - valueSum, 0);
+	return 0;
 }

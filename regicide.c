@@ -25,12 +25,14 @@ int main()
 	printCard(soldiers, 1, 10);
 	shuffle(soldiers, SOLDIERS_MAX);
 
-	for (int i = 0; i < ENEMIES_MAX; i++)
-		printf("%s %s %d %d\n", enemies[i].enemy_card.suit, enemies[i].enemy_card.vname,
-		       enemies[i].attack, enemies[i].health);
+	// //print enemies
+	// for (int i = 0; i < ENEMIES_MAX; i++)
+	// 	printf("%s %s %d %d\n", enemies[i].enemy_card.suit, enemies[i].enemy_card.vname,
+	// 	       enemies[i].attack, enemies[i].health);
 
-	for (int i = 0; i < SOLDIERS_MAX; i++)
-		printf("%s %s\n", soldiers[i].suit, soldiers[i].vname);
+	// // print soldiers
+	// for (int i = 0; i < SOLDIERS_MAX; i++)
+	// 	printf("%s %s\n", soldiers[i].suit, soldiers[i].vname);
 
 	// for (int i = 0; i < HAND_MAX; i++)
 	// 	printf("%s %d\n", hand[i].suit, hand[i].value);
@@ -38,24 +40,28 @@ int main()
 	//准备牌堆
 	deque deck = createDeque();
 	addCardsToDeck(&deck, soldiers, SOLDIERS_MAX);
-	hireFromDeck(&deck, hand, 8, &handNum);
+	hireFromDeck(&deck, hand, 4, &handNum);
 	//displayEnemy(enemies[enemyIndex]);
 	displayHand(hand, handNum);
 
-	// for(int i = 0;i<handNum;i++){
-	// 	discard[i] = hand[i];
-	// 	discardNum++;
-	// }
-	// displayHand(discard,discardNum);
+	for(int i = 0;i<handNum;i++){
+		discard[i] = hand[i];
+		discardNum++;
+	}
+	displayHand(discard,discardNum);
 	// healFromDiscard(&deck,discard,5,&discardNum);
 	// displayHand(discard,discardNum);
 
-	// int cnt = getValidInput(hand, validInput);
-	// printf("%d\n", cnt);
-	// for(int i=0; i < cnt; i++){
-	// 	printf("%d ",validInput[i]);
-	// }
-	// rearrangeCards(hand);
+	int inputNum = getValidInput(hand, validInput);
+	printf("%d\n", inputNum);
+	for(int i=0; i < inputNum; i++){
+		printf("%d ",validInput[i]);
+	}
+	rearrangeCards(hand);
 
+	activateRedSuitPower(hand, &handNum, validInput, inputNum, discard, &discardNum, &deck);
+	displayHand(discard, discardNum);
+	displayHand(hand, handNum);
+	printf("%d\n", deck.size);
 	return 0;
 }
