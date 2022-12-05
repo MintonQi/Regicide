@@ -9,11 +9,6 @@
             "cwd": "/home/qikongjia/regicide",
             "binaryPath": "/home/qikongjia/regicide/regicide",
             "binaryArgs": []
-        },
-        {
-            "cwd": "f:\\C_Linux\\C",
-            "binaryPath": "f:\\C_Linux\\C\\regicide",
-            "binaryArgs": []
         }
     ]
 }

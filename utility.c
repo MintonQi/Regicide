@@ -140,6 +140,7 @@ void displayEnemy(enemy currentEnemy)
 	printf("Health: %d\n", currentEnemy.health);
 }
 
+// 阶段1：打出卡牌
 // 可以单张牌 可以combo但是不超过10 可以一张宠物牌+一张手牌 最多2222 四张牌
 int getValidInput(card *hand, int *validInput)
 {
@@ -225,11 +226,13 @@ int getValidInput(card *hand, int *validInput)
 	return -1;
 }
 
+// 阶段二 激活技能
+// 红牌技能
 void activateRedSuitPower(card *hand, int *handNum, int *validInput, int inputNum,
                           card *discard, int *discardNum, deque *deck)
 {
-	int valueSum = 0, hasHeart = 0, hasDiamond = 0; // value is 1 means input has heart/diamond
-	for (int i = 0; i < inputNum; i++) {            // record heart/diamond and get sum of value
+	int valueSum = 0, hasHeart = 0, hasDiamond = 0;
+	for (int i = 0; i < inputNum; i++) { // 看有没有红色牌 并记录总数值
 		if (strcmp(hand[validInput[i]].suit, "Heart") == 0) {
 			hasHeart = 1;
 		} else if (strcmp(hand[validInput[i]].suit, "Diamond") == 0) {
@@ -240,37 +243,73 @@ void activateRedSuitPower(card *hand, int *handNum, int *validInput, int inputNu
 	if (hasHeart + hasDiamond == 0)
 		return;
 
-	// move cards
+	// 红牌技能结算
 	if (hasHeart)
 		healFromDiscard(deck, discard, valueSum, discardNum);
 	if (hasDiamond)
 		hireFromDeck(deck, hand, valueSum, handNum);
 }
 
-// return 0 if enemy is alive, 1 if overkilled, 2 if damage equal to hp
+// 阶段三 造成伤害 检查敌人是否被击败
+// 黑牌技能
+// enemy还活着 return 0， overkill return 1， 归化 return 2
 int attackEnemy(enemy *currentEnemy, int *validInput, int inputNum, card *hand)
 {
-	int valueSum = 0, hasClub = 0, hasSpade = 0; // value is 1 means input has heart/diamond
-	for (int i = 0; i < inputNum; i++) {         // record club/spade and get sum of value
-		if (strcmp(hand[validInput[i]].suit, "Heart") == 0) {
+	int valueSum = 0, hasClub = 0, hasSpade = 0;
+	for (int i = 0; i < inputNum; i++) {
+		if (strcmp(hand[validInput[i]].suit, "Club") == 0) {
 			hasClub = 1;
-		} else if (strcmp(hand[validInput[i]].suit, "Diamond") == 0) {
+		} else if (strcmp(hand[validInput[i]].suit, "Spade") == 0) {
 			hasSpade = 1;
 		}
 		valueSum += hand[validInput[i]].value;
 	}
 
-	// deal damage and reduce atk
-	if (hasClub) 
+	// 黑牌技能结算
+	// 草花让伤害翻倍
+	if (hasClub)
 		valueSum *= 2;
 	int hp = currentEnemy->health;
-	if (valueSum > hp)
+	if (valueSum > hp) // overkill
 		return 1;
-	else if (valueSum == hp)
+	else if (valueSum == hp) // 归化
 		return 2;
 	else
-		currentEnemy->health -= valueSum;
+		currentEnemy->health -= valueSum; // 减血量
+	// 黑桃减伤害
 	if (hasSpade)
 		currentEnemy->attack = max(currentEnemy->attack - valueSum, 0);
 	return 0;
+}
+
+// 真正把牌打出去：手牌->buffer
+void playCard(int *validInput, int inputNum, card *buffer,
+              int *bufferNum, card *hand, int *handNum)
+{
+	for (int i = 0; i < inputNum; i++) {
+		buffer[*bufferNum + i]    = hand[validInput[i]]; // 加入buffer
+		hand[validInput[i]].value = 0;                   // 从手牌中移除
+	}
+	rearrangeCards(hand);   // 重新整理手牌
+	*handNum -= inputNum;   // 手牌数减少
+	*bufferNum += inputNum; // buffer数增加
+}
+
+void overkill(card *buffer, int *bufferNum, card *discard,
+              int *discardNum, int *enemyIndex)
+{
+	(*enemyIndex)++; // 弃掉当前enemy
+	for (int i = 0; i < *bufferNum; i++) {
+		discard[*discardNum + i] = buffer[i]; // 从buffer->弃牌堆
+	}
+	*discardNum += *bufferNum; // 增加弃牌堆数量
+	*bufferNum = 0;            //清空buffer
+}
+
+void adopt(card *buffer, int *bufferNum, card *discard, int *discardNum,
+           enemy currentEnemy, int *enemyIndex, deque *deck)
+{
+	// currentEnemy.enemy_card
+	//enqueueHead(deck, );
+
 }
