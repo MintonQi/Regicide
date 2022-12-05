@@ -42,7 +42,7 @@ int main()
 	addCardsToDeck(&deck, soldiers, SOLDIERS_MAX);
 	hireFromDeck(&deck, hand, 4, &handNum);
 	// displayEnemy(enemies[enemyIndex]);
-	printf("打印手牌\n");
+	printf("PRINT HAND\n");
 	displayHand(hand, handNum);
 
 	// 赋值弃牌堆（暂时用一下手牌
@@ -51,47 +51,44 @@ int main()
 		discardNum++;
 	}
 
-	printf("打印弃牌堆\n");
+	printf("PRINT DISCARD\n");
 	displayHand(discard, discardNum);
 	// healFromDiscard(&deck,discard,5,&discardNum);
 	// displayHand(discard,discardNum);
 
-	int inputNum = getValidInput(hand, validInput);
-	// printf("%d\n", inputNum);
-	//  for(int i=0; i < inputNum; i++){
-	//  	printf("%d ",validInput[i]);
-	//  }
+	int inputNum = getValidInput(hand, &handNum, buffer, &bufferNum);
+	printf("%d\n", inputNum);
+	printf("PRINT BUFFER\n");
+	displayHand(buffer, bufferNum);
 	// rearrangeCards(hand);
 
-	activateRedSuitPower(hand, &handNum, validInput, inputNum, discard, &discardNum, &deck);
-	printf("打印手牌\n");
+	activateRedSuitPower(hand, &handNum, buffer, bufferNum, inputNum, discard, &discardNum, &deck);
+	printf("PRINT HAND\n");
 	displayHand(hand, handNum);
-	printf("打印弃牌堆\n");
+	printf("PRINT DISCARD\n");
 	displayHand(discard, discardNum);
-	printf("打印deck数量\n");
+	printf("PRINT DECK.SIZE\n");
 	printf("%d\n", deck.size);
 
-	printf("打印enemy信息\n");
+	printf("PRINT ENEMIES\n");
 	printf("%s %s %d %d\n", enemies[enemyIndex].enemy_card.suit, enemies[enemyIndex].enemy_card.vname,
 	       enemies[enemyIndex].attack, enemies[enemyIndex].health);
-	attackEnemy(&enemies[enemyIndex], validInput, inputNum, hand);
-	printf("打印enemy信息\n");
+	attackEnemy(&enemies[enemyIndex], buffer, bufferNum, inputNum, hand);
+	printf("PRINT ENEMIES\n");
 	printf("%s %s %d %d\n", enemies[enemyIndex].enemy_card.suit, enemies[enemyIndex].enemy_card.vname,
 	       enemies[enemyIndex].attack, enemies[enemyIndex].health);
-
-	playCard(validInput, inputNum, buffer, &bufferNum, hand, &handNum);
-	printf("打印手牌\n");
+	printf("PRINT HAND\n");
 	displayHand(hand, handNum);
-	printf("打印buffer\n");
+	printf("PIRNT BUFFER\n");
 	displayHand(buffer, bufferNum);
 
 	overkill(buffer, &bufferNum, discard, &discardNum, &enemyIndex);
-	printf("打印enemy信息\n");
+	printf("PRINT ENEMIES\n");
 	printf("%s %s %d %d\n", enemies[enemyIndex].enemy_card.suit, enemies[enemyIndex].enemy_card.vname,
 	       enemies[enemyIndex].attack, enemies[enemyIndex].health);
-	printf("打印buffer\n");
+	printf("PRINT BUFFER\n");
 	displayHand(buffer, bufferNum);
-	printf("打印弃牌堆\n");
+	printf("PINRT DISCARD\n");
 	displayHand(discard, discardNum);
 	return 0;
 }

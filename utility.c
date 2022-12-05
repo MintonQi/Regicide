@@ -10,7 +10,7 @@
 char *vnames[] = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
 char *suits[]  = { "Spade", "Club", "Heart", "Diamond" };
 
-//æ´—ç‰Œ  1. æ•Œäººé˜Ÿåˆ—  2. å¼ƒç‰Œå †
+//Ï´ÅÆ  1. µĞÈË¶ÓÁĞ  2. ÆúÅÆ¶Ñ
 void shuffle(void *arr, int size)
 {
 	card *cards = (card *)arr;
@@ -56,8 +56,8 @@ void castleDeck(card *enemies_cards, enemy *enemies)
 	}
 }
 
-//ä»ç‰Œå †åº•éƒ¨åŠ å…¥
-// 1. åˆå§‹åŒ–ç‰Œå †  2.ä»å¼ƒç‰Œå †heal
+//´ÓÅÆ¶Ñµ×²¿¼ÓÈë
+// 1. ³õÊ¼»¯ÅÆ¶Ñ  2.´ÓÆúÅÆ¶Ñheal
 void addCardsToDeck(deque *deck, card *cards, int n)
 {
 	for (int i = 0; i < n; i++) {
@@ -99,20 +99,20 @@ int max(int a, int b)
 
 void hireFromDeck(deque *deck, card *hand, int n, int *handNum)
 {
-	// nä¸ºè¯•å›¾æ’å…¥çš„æ‰‹ç‰Œæ•°ï¼Œç°ç¼©å°ä¸ºèƒ½å¤Ÿæ’å…¥çš„æ‰‹ç‰Œæ•°
-	n = min(n, deck->size);          // å¦‚æœdeckç‰Œæ•°ä¸è¶³ï¼Œç¼©å°nè‡³deckå‰©ä½™ç‰Œæ•°
-	n = min(n, HAND_MAX - *handNum); // å¦‚æœæ‰‹ç‰Œç©ºé—´ä¸è¶³ï¼Œç¼©å°nè‡³æ‰‹ç‰Œå‰©ä½™ç©ºé—´
-	for (int i = 0; i < n; i++)      // æ’å…¥nå¼ ç‰Œ
+	// nÎªÊÔÍ¼²åÈëµÄÊÖÅÆÊı£¬ÏÖËõĞ¡ÎªÄÜ¹»²åÈëµÄÊÖÅÆÊı
+	n = min(n, deck->size);          // Èç¹ûdeckÅÆÊı²»×ã£¬ËõĞ¡nÖÁdeckÊ£ÓàÅÆÊı
+	n = min(n, HAND_MAX - *handNum); // Èç¹ûÊÖÅÆ¿Õ¼ä²»×ã£¬ËõĞ¡nÖÁÊÖÅÆÊ£Óà¿Õ¼ä
+	for (int i = 0; i < n; i++)      // ²åÈënÕÅÅÆ
 		hand[i + *handNum] = dequeueHead(deck);
-	*handNum += n; // æ‰‹ç‰Œæ•°åŠ n
+	*handNum += n; // ÊÖÅÆÊı¼Ón
 }
 
 void healFromDiscard(deque *deck, card *discard, int n, int *discardNum)
 {
-	shuffle(discard, *discardNum); // æ´—å¼ƒç‰Œå †
-	n = min(n, *discardNum);       // nä¸ºèƒ½healçš„ç‰Œæ•°
+	shuffle(discard, *discardNum); // Ï´ÆúÅÆ¶Ñ
+	n = min(n, *discardNum);       // nÎªÄÜhealµÄÅÆÊı
 
-	for (int i = 0; i < n; i++) { // å°†ç‰Œæ’å…¥ç‰Œå †åº•éƒ¨ ä¹‹åè¢«è®¾ä¸º0
+	for (int i = 0; i < n; i++) { // ½«ÅÆ²åÈëÅÆ¶Ñµ×²¿ Ö®ºó±»ÉèÎª0
 		enqueueTail(deck, discard[i]);
 		discard[i].value = 0;
 		(*discardNum)--;
@@ -140,63 +140,59 @@ void displayEnemy(enemy currentEnemy)
 	printf("Health: %d\n", currentEnemy.health);
 }
 
-// é˜¶æ®µ1ï¼šæ‰“å‡ºå¡ç‰Œ
-// å¯ä»¥å•å¼ ç‰Œ å¯ä»¥comboä½†æ˜¯ä¸è¶…è¿‡10 å¯ä»¥ä¸€å¼ å® ç‰©ç‰Œ+ä¸€å¼ æ‰‹ç‰Œ æœ€å¤š2222 å››å¼ ç‰Œ
-int getValidInput(card *hand, int *validInput)
+// ½×¶Î1£º»ñÈ¡Íæ¼ÒÏëÒª´ò³öµÄ´ò³öµÄ¿¨ÅÆ²¢ÒÆÈëbuffer ·µ»Ø´ò³öµÄÊÖÅÆÊı
+// ¿ÉÒÔµ¥ÕÅÅÆ ¿ÉÒÔcomboµ«ÊÇ²»³¬¹ı10 ¿ÉÒÔÒ»ÕÅ³èÎïÅÆ+Ò»ÕÅÊÖÅÆ ×î¶à2222 ËÄÕÅÅÆ
+int getValidInput(card *hand, int *handNum, card *buffer, int *bufferNum)
 {
-	// initialize/reset validInput.
-	for (int i = 0; i < INPUT_MAX; i++) {
-		validInput[i] = 0;
-	}
 	printf("Choose the hand numbers you want to play:\n");
 	printf("(No spaces between hand numbers, and press enter to play)\n");
 	char inputNumbers[INPUT_MAX];
 
 	while (1) {
-		int isValid = 1, cnt = 0; // isValidä¸º1 ä»£è¡¨valid
-		// è¾“å…¥çš„indexæ˜¯å¦valid
-		while (1) { // åŠ ä¸Š'\n'æœ€å¤š5ä¸ªå­—ç¬¦
+		int isValid = 1, cnt = 0; // isValidÎª1 ´ú±ívalid
+		// ÊäÈëµÄindexÊÇ·ñvalid
+		while (1) { // ¼ÓÉÏ'\n'×î¶à5¸ö×Ö·û
 			char c = getchar();
-			if (c == '\n') {  //  æ¥æ”¶åˆ°å›è½¦åbreak
-				if (cnt == 0) // æ²¡æœ‰è¾“å…¥ç›´æ¥å›è½¦çš„æ˜¯invalid
+			if (c == '\n') {  //  ½ÓÊÕµ½»Ø³µºóbreak
+				if (cnt == 0) // Ã»ÓĞÊäÈëÖ±½Ó»Ø³µµÄÊÇinvalid
 					isValid = 0;
 				break;
 			}
-			if (cnt >= 5) { //  è¶…å‡ºæ•°é‡é™åˆ¶
+			if (cnt >= 5) { //  ³¬³öÊıÁ¿ÏŞÖÆ
 				isValid = 0;
 				continue;
 			}
 			if (c < '1' || c > '8') { // invalid input
-				isValid = 0;          // ä½†æ˜¯ä¸èƒ½ç«‹åˆ»break å› ä¸ºè¦ç­‰å¾…å›è½¦
+				isValid = 0;          // µ«ÊÇ²»ÄÜÁ¢¿Ìbreak ÒòÎªÒªµÈ´ı»Ø³µ
 			} else
 				inputNumbers[cnt] = c;
 			cnt++;
 		}
 
-		// åˆ¤æ–­è¾“å…¥indexæ˜¯å¦é‡å¤
+		// ÅĞ¶ÏÊäÈëindexÊÇ·ñÖØ¸´
 		if (isValid == 1) {
 			for (int i = 0; i < cnt; i++) {
 				for (int j = i + 1; j < cnt; j++) {
 					if (inputNumbers[i] == inputNumbers[j]) {
 						isValid = 0;
-						i       = cnt; // è·³å‡ºå¤–å±‚å¾ªç¯
-						break;         // è·³å‡ºå†…å±‚å¾ªç¯
+						i       = cnt; // Ìø³öÍâ²ãÑ­»·
+						break;         // Ìø³öÄÚ²ãÑ­»·
 					}
 				}
 			}
 		}
 
-		// åˆ¤æ–­comboæ˜¯å¦valid 1. è¿æ‹› 2. å® ç‰©ç‰Œ
+		// ÅĞ¶ÏcomboÊÇ·ñvalid 1. Á¬ÕĞ 2. ³èÎïÅÆ
 		if (isValid == 1) {
-			int isSame = 1, petNum = 0; // isSame==1 ä»£è¡¨æ•°å€¼ç›¸åŒ
-			int comboCardValues[4];     // æœ€å¤šå‡ºå››å¼ ç‰Œ
+			int isSame = 1, petNum = 0; // isSame==1 ´ú±íÊıÖµÏàÍ¬
+			int comboCardValues[4];     // ×î¶à³öËÄÕÅÅÆ
 			for (int i = 0; i < cnt; i++) {
 				comboCardValues[i] = hand[inputNumbers[i] - '0' - 1].value;
 			}
 			for (int i = 0; i < cnt; i++) {
-				if (comboCardValues[i] == 1) // æœ‰å® ç‰©
+				if (comboCardValues[i] == 1) // ÓĞ³èÎï
 					petNum++;
-				for (int j = i + 1; j < cnt; j++) { // æ•°å€¼æ˜¯å¦ç›¸åŒ
+				for (int j = i + 1; j < cnt; j++) { // ÊıÖµÊÇ·ñÏàÍ¬
 					if (comboCardValues[i] != comboCardValues[j]) {
 						isSame = 0;
 					}
@@ -215,9 +211,14 @@ int getValidInput(card *hand, int *validInput)
 
 		// valid input
 		if (isValid == 1) {
-			for (int i = 0; i < cnt; i++) {
-				validInput[i] = inputNumbers[i] - '0' - 1;
+			for (int i = 0; i < cnt; i++){ // hand -->> buffer
+				int handIndex = inputNumbers[i] - '0' - 1;
+				buffer[*bufferNum + i] = hand[handIndex];
+				hand[handIndex].value = 0;
 			}
+			*bufferNum += cnt;
+			*handNum -= cnt;
+			rearrangeCards(hand);
 			return cnt;
 		} else {
 			printf("Invalid input! Please enter a valid combo: \n");
@@ -226,84 +227,72 @@ int getValidInput(card *hand, int *validInput)
 	return -1;
 }
 
-// é˜¶æ®µäºŒ æ¿€æ´»æŠ€èƒ½
-// çº¢ç‰ŒæŠ€èƒ½
-void activateRedSuitPower(card *hand, int *handNum, int *validInput, int inputNum,
+// ½×¶Î¶ş ¼¤»îºìÉ«ÅÆ¼¼ÄÜ
+// ºìÅÆ¼¼ÄÜ
+void activateRedSuitPower(card *hand, int *handNum, card *buffer, int bufferNum, int inputNum,
                           card *discard, int *discardNum, deque *deck)
 {
 	int valueSum = 0, hasHeart = 0, hasDiamond = 0;
-	for (int i = 0; i < inputNum; i++) { // çœ‹æœ‰æ²¡æœ‰çº¢è‰²ç‰Œ å¹¶è®°å½•æ€»æ•°å€¼
-		if (strcmp(hand[validInput[i]].suit, "Heart") == 0) {
+	for (int i = bufferNum - inputNum; i < bufferNum; i++) { // ¿´ÓĞÃ»ÓĞºìÉ«ÅÆ ²¢¼ÇÂ¼×ÜÊıÖµ
+		if (strcmp(buffer[i].suit, "Heart") == 0) {
 			hasHeart = 1;
-		} else if (strcmp(hand[validInput[i]].suit, "Diamond") == 0) {
+		} else if (strcmp(buffer[i].suit, "Diamond") == 0) {
 			hasDiamond = 1;
 		}
-		valueSum += hand[validInput[i]].value;
+		valueSum += buffer[i].value;
 	}
 	if (hasHeart + hasDiamond == 0)
 		return;
 
-	// çº¢ç‰ŒæŠ€èƒ½ç»“ç®—
+	// ºìÅÆ¼¼ÄÜ½áËã
 	if (hasHeart)
 		healFromDiscard(deck, discard, valueSum, discardNum);
 	if (hasDiamond)
 		hireFromDeck(deck, hand, valueSum, handNum);
 }
 
-// é˜¶æ®µä¸‰ é€ æˆä¼¤å®³ æ£€æŸ¥æ•Œäººæ˜¯å¦è¢«å‡»è´¥
-// é»‘ç‰ŒæŠ€èƒ½
-// enemyè¿˜æ´»ç€ return 0ï¼Œ overkill return 1ï¼Œ å½’åŒ– return 2
-int attackEnemy(enemy *currentEnemy, int *validInput, int inputNum, card *hand)
+// ½×¶ÎÈı ¼ì²éµĞÈËÊÇ·ñ±»»÷°Ü
+// ºÚÅÆ¼¼ÄÜ
+// enemy»¹»î×Å return 0£¬ overkill return 1£¬ ¹é»¯ return 2
+int attackEnemy(enemy *currentEnemy, card *buffer, int bufferNum, int inputNum, card *hand)
 {
 	int valueSum = 0, hasClub = 0, hasSpade = 0;
-	for (int i = 0; i < inputNum; i++) {
-		if (strcmp(hand[validInput[i]].suit, "Club") == 0) {
+	for (int i = bufferNum - inputNum; i < bufferNum; i++) {
+		if (strcmp(buffer[i].suit, "Club") == 0) {
 			hasClub = 1;
-		} else if (strcmp(hand[validInput[i]].suit, "Spade") == 0) {
+		} else if (strcmp(buffer[i].suit, "Spade") == 0) {
 			hasSpade = 1;
 		}
-		valueSum += hand[validInput[i]].value;
-	}
+		valueSum += buffer[i].value;
+	}   
 
-	// é»‘ç‰ŒæŠ€èƒ½ç»“ç®—
-	// è‰èŠ±è®©ä¼¤å®³ç¿»å€
+	// ºÚÅÆ¼¼ÄÜ½áËã
+	// ²İ»¨ÈÃÉËº¦·­±¶
 	if (hasClub)
 		valueSum *= 2;
 	int hp = currentEnemy->health;
 	if (valueSum > hp) // overkill
 		return 1;
-	else if (valueSum == hp) // å½’åŒ–
+	else if (valueSum == hp) // ¹é»¯
 		return 2;
 	else
-		currentEnemy->health -= valueSum; // å‡è¡€é‡
-	// é»‘æ¡ƒå‡ä¼¤å®³
+		currentEnemy->health -= valueSum; // ¼õÑªÁ¿
+	// ºÚÌÒ¼õÉËº¦
 	if (hasSpade)
 		currentEnemy->attack = max(currentEnemy->attack - valueSum, 0);
 	return 0;
 }
 
-// çœŸæ­£æŠŠç‰Œæ‰“å‡ºå»ï¼šæ‰‹ç‰Œ->buffer
-void playCard(int *validInput, int inputNum, card *buffer,
-              int *bufferNum, card *hand, int *handNum)
-{
-	for (int i = 0; i < inputNum; i++) {
-		buffer[*bufferNum + i]    = hand[validInput[i]]; // åŠ å…¥buffer
-		hand[validInput[i]].value = 0;                   // ä»æ‰‹ç‰Œä¸­ç§»é™¤
-	}
-	rearrangeCards(hand);   // é‡æ–°æ•´ç†æ‰‹ç‰Œ
-	*handNum -= inputNum;   // æ‰‹ç‰Œæ•°å‡å°‘
-	*bufferNum += inputNum; // bufferæ•°å¢åŠ 
-}
 
 void overkill(card *buffer, int *bufferNum, card *discard,
               int *discardNum, int *enemyIndex)
 {
-	(*enemyIndex)++; // å¼ƒæ‰å½“å‰enemy
+	(*enemyIndex)++; // Æúµôµ±Ç°enemy
 	for (int i = 0; i < *bufferNum; i++) {
-		discard[*discardNum + i] = buffer[i]; // ä»buffer->å¼ƒç‰Œå †
+		discard[*discardNum + i] = buffer[i]; // ´Óbuffer->ÆúÅÆ¶Ñ
 	}
-	*discardNum += *bufferNum; // å¢åŠ å¼ƒç‰Œå †æ•°é‡
-	*bufferNum = 0;            //æ¸…ç©ºbuffer
+	*discardNum += *bufferNum; // Ôö¼ÓÆúÅÆ¶ÑÊıÁ¿
+	*bufferNum = 0;            //Çå¿Õbuffer
 }
 
 void adopt(card *buffer, int *bufferNum, card *discard, int *discardNum,
