@@ -307,10 +307,10 @@ void adopt(card *buffer, int *bufferNum, card *discard, int *discardNum,
 }
 
 // 被攻击 弃牌， 若没有足够牌游戏结束返回-1 否则返回0
-int takeEnemyAttack(card *hand, int *handNum, card *buffer,
+int sufferDamage(card *hand, int *handNum, card *buffer,
                     int *bufferNum, enemy currentEnemy)
 {
-	printf("You are attacked, please discard cards over %d value\n", currentEnemy.attack);
+	printf("You are attacked, please discard hand cards with a total of not less than %d points.\n", currentEnemy.attack);
 	int valueSum = 0;
 	for (int i = 0; i < *handNum; i++) {
 		valueSum += hand[i].value;
@@ -380,8 +380,10 @@ int takeEnemyAttack(card *hand, int *handNum, card *buffer,
 			*bufferNum += cnt;
 			*handNum -= cnt;
 			rearrangeCards(hand);
+			return 0;
 		} else {
-			printf("Not enough! Please choose again: \n");
+			printf("Invalid input! Please choose again: \n");
+			return -1;
 		}
 	}
 	return 1;

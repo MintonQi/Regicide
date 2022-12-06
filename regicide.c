@@ -76,7 +76,7 @@ int main()
 	printf("PRINT DISCARD\n");
 	displayHand(discard, discardNum);
 
-	takeEnemyAttack(hand, &handNum, buffer, &bufferNum, enemies[enemyIndex]);
+	sufferDamage(hand, &handNum, buffer, &bufferNum, enemies[enemyIndex]);
 	printf("PRINT HAND\n");
 	displayHand(hand, handNum);
 	printf("PIRNT BUFFER\n");

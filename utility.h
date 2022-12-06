@@ -22,6 +22,6 @@ void overkill(card *buffer, int *bufferNum, card *discard, int *discardNum,
               int *enemyIndex);
 void adopt(card *buffer, int *bufferNum, card *discard, int *discardNum,
            enemy currentEnemy, int *enemyIndex, deque *deck);
-int takeEnemyAttack(card *hand, int *handNum, card *buffer,
+int sufferDamage(card *hand, int *handNum, card *buffer,
                     int *bufferNum, enemy currentEnemy);
 #endif
