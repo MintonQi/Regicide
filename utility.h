@@ -15,13 +15,13 @@ void healFromDiscard(deque *deck, card *discard, int n, int *discardNum);
 void displayHand(card *cards, int handNum);
 void displayEnemy(enemy currentEnemy);
 int  getValidInput(card *hand, int *handNum, card *buffer, int *bufferNum);
-void activateRedSuitPower(card *hand, int *handNum, card *buffer, int bufferNum,
+void activateRedSuitPower(card *hand, int *handNum, card *buffer, int bufferNum,enemy currentEnemy,
                           int inputNum, card *discard, int *discardNum, deque *deck);
 int  attackEnemy(enemy *currentEnemy, card *buffer, int bufferNum, int inputNum, card *hand);
-void overkill(card *buffer, int *bufferNum, card *discard, int *discardNum,
-              int *enemyIndex);
-void adopt(card *buffer, int *bufferNum, card *discard, int *discardNum,
-           enemy currentEnemy, int *enemyIndex, deque *deck);
+void killEnemy(card *buffer, int *bufferNum, card *discard, int *discardNum,
+               enemy currentEnemy, int *enemyIndex, deque *deck, int status);
 int sufferDamage(card *hand, int *handNum, card *buffer,
-                    int *bufferNum, enemy currentEnemy);
+                     int *bufferNum, enemy currentEnemy);
+void useJokerPower(card *hand, int *handNum, card *buffer,
+                   int *bufferNum, deque *deck, int *jokerNum);
 #endif

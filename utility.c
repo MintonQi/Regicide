@@ -10,7 +10,7 @@
 char *vnames[] = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
 char *suits[]  = { "Spade", "Club", "Heart", "Diamond" };
 
-//洗牌  1. 敌人队列  2. 弃牌堆
+// 洗牌  1. 敌人队列  2. 弃牌堆
 void shuffle(void *arr, int size)
 {
 	card *cards = (card *)arr;
@@ -47,7 +47,7 @@ void castleDeck(card *enemies_cards, enemy *enemies)
 	int defaultHealth = 20;
 	int defaultAttack = 10;
 	for (int i = 0; i < ENEMIES_MAX; i++) {
-		enemies_cards[i].value = defaultAttack; //方便归化后计算
+		enemies_cards[i].value = defaultAttack; // 方便归化后计算
 		enemies[i].enemy_card  = enemies_cards[i];
 		enemies[i].health      = defaultHealth;
 		enemies[i].attack      = defaultAttack;
@@ -59,8 +59,8 @@ void castleDeck(card *enemies_cards, enemy *enemies)
 	}
 }
 
-//从牌堆底部加入
-// 1. 初始化牌堆  2.从弃牌堆heal
+// 从牌堆底部加入
+//  1. 初始化牌堆  2.从弃牌堆heal
 void addCardsToDeck(deque *deck, card *cards, int n)
 {
 	for (int i = 0; i < n; i++) {
@@ -231,22 +231,24 @@ int getValidInput(card *hand, int *handNum, card *buffer, int *bufferNum)
 
 // 阶段二 激活技能
 // 红牌技能
-void activateRedSuitPower(card *hand, int *handNum, card *buffer, int bufferNum,
+void activateRedSuitPower(card *hand, int *handNum, card *buffer, int bufferNum, enemy currentEnemy,
                           int inputNum, card *discard, int *discardNum, deque *deck)
 {
 	int valueSum = 0, hasHeart = 0, hasDiamond = 0;
 	// 看有没有红色牌 并记录总数值 遍历当前buffer里刚打出去的牌
+	// 如果与enemy花色相同则无法发挥技能
 	for (int i = bufferNum - inputNum; i < bufferNum; i++) {
-		if (strcmp(buffer[i].suit, "Heart") == 0) {
+		if (strcmp(buffer[i].suit, "Heart") == 0
+		    && (strcmp(currentEnemy.enemy_card.suit, "Heart") != 0)) {
 			hasHeart = 1;
-		} else if (strcmp(buffer[i].suit, "Diamond") == 0) {
+		} else if (strcmp(buffer[i].suit, "Diamond") == 0
+		           && (strcmp(currentEnemy.enemy_card.suit, "Diamond") != 0)) {
 			hasDiamond = 1;
 		}
 		valueSum += buffer[i].value;
 	}
 	if (hasHeart + hasDiamond == 0)
 		return;
-
 	// 红牌技能结算
 	if (hasHeart)
 		healFromDiscard(deck, discard, valueSum, discardNum);
@@ -261,15 +263,21 @@ int attackEnemy(enemy *currentEnemy, card *buffer, int bufferNum, int inputNum, 
 {
 	int valueSum = 0, hasClub = 0, hasSpade = 0;
 	for (int i = bufferNum - inputNum; i < bufferNum; i++) {
-		if (strcmp(buffer[i].suit, "Club") == 0) {
+		if (strcmp(buffer[i].suit, "Club") == 0
+		    && (strcmp(currentEnemy->enemy_card.suit, "Club") != 0)) {
 			hasClub = 1;
-		} else if (strcmp(buffer[i].suit, "Spade") == 0) {
+		} else if (strcmp(buffer[i].suit, "Spade") == 0
+		           && (strcmp(currentEnemy->enemy_card.suit, "Spade") != 0)) {
 			hasSpade = 1;
 		}
 		valueSum += buffer[i].value;
 	}
 
-	// 黑牌技能结算
+	// 黑牌技能结算 要先算黑桃再算草花 不然valuesum可能会翻倍
+	// 黑桃减伤害
+	if (hasSpade)
+		currentEnemy->attack = max(currentEnemy->attack - valueSum, 0);
+
 	// 草花让伤害翻倍
 	if (hasClub)
 		valueSum *= 2;
@@ -280,44 +288,42 @@ int attackEnemy(enemy *currentEnemy, card *buffer, int bufferNum, int inputNum, 
 		return 2;
 	else
 		currentEnemy->health -= valueSum; // 减血量
-	// 黑桃减伤害
-	if (hasSpade)
-		currentEnemy->attack = max(currentEnemy->attack - valueSum, 0);
 	return 0;
 }
 
-void overkill(card *buffer, int *bufferNum, card *discard,
-              int *discardNum, int *enemyIndex)
+// status为1代表overkill 2代表归化
+// status>0进此函数
+void killEnemy(card *buffer, int *bufferNum, card *discard, int *discardNum,
+               enemy currentEnemy, int *enemyIndex, deque *deck, int status)
 {
+	if (status == 2) {
+		// 归化 进入牌堆顶部
+		enqueueHead(deck, currentEnemy.enemy_card);
+	}
 	(*enemyIndex)++; // 弃掉当前enemy
 	for (int i = 0; i < *bufferNum; i++) {
 		discard[*discardNum + i] = buffer[i]; // 从buffer->弃牌堆
 	}
 	*discardNum += *bufferNum; // 增加弃牌堆数量
-	*bufferNum = 0;            //清空buffer
-}
-
-void adopt(card *buffer, int *bufferNum, card *discard, int *discardNum,
-           enemy currentEnemy, int *enemyIndex, deque *deck)
-{
-	// 归化 进入牌堆顶部
-	enqueueHead(deck, currentEnemy.enemy_card);
-	// 其他的都和overkill的步骤一样
-	overkill(buffer, bufferNum, discard, discardNum, enemyIndex);
+	*bufferNum = 0;            // 清空buffer
 }
 
 // 被攻击 弃牌， 若没有足够牌游戏结束返回-1 否则返回0
 int sufferDamage(card *hand, int *handNum, card *buffer,
-                    int *bufferNum, enemy currentEnemy)
+                 int *bufferNum, enemy currentEnemy)
 {
-	printf("You are attacked, please discard hand cards with a total of not less than %d points.\n", currentEnemy.attack);
+	printf("You are attacked, please discard hand cards >= %d points.\n", currentEnemy.attack);
 	int valueSum = 0;
-	for (int i = 0; i < *handNum; i++) {
+	for (int i = 0; i < *handNum; i++) { // 计算所有手牌数总值
 		valueSum += hand[i].value;
 	}
 	if (valueSum < currentEnemy.attack) { // 牌不够 游戏结束
 		printf("You don't have enough cards. You die.\n");
 		return -1;
+	}
+	// 如果enemy没有攻击力 提醒玩家可以不用弃牌 输入0
+	if (currentEnemy.attack == 0) {
+		printf("Enemy has no attack, you can skip this by enter 0\n");
 	}
 	// 有足够的牌可以弃
 	printf("Choose the hand numbers you want to play:\n");
@@ -337,11 +343,16 @@ int sufferDamage(card *hand, int *handNum, card *buffer,
 				isValid = 0;
 				continue;
 			}
-			if (c < '1' || c > ((*handNum) + '0')) { // 超出index范围
-				isValid = 0;                         // 但是不能立刻break 因为要等待回车
+			if (currentEnemy.attack > 0 && (c < '1' || c > ((*handNum) + '0'))) { // 超出index范围 要弃牌时不能输入0
+				isValid = 0;                                                      // 但是不能立刻break 因为要等待回车
 			} else
 				inputNumbers[cnt] = c;
 			cnt++;
+		}
+
+		// 输入0 不弃牌 直接return
+		if (currentEnemy.attack == 0 && inputNumbers[0] == '0') {
+			return 0;
 		}
 
 		// 判断输入index是否重复
@@ -356,7 +367,7 @@ int sufferDamage(card *hand, int *handNum, card *buffer,
 				}
 			}
 		}
-		
+
 		// 判断数值总和是否大于attack
 		if (isValid == 1) {
 			valueSum = 0;
@@ -366,14 +377,11 @@ int sufferDamage(card *hand, int *handNum, card *buffer,
 			if (valueSum < currentEnemy.attack)
 				isValid = 0;
 		}
-		
 
 		// valid input
 		if (isValid == 1) {
 			for (int i = 0; i < cnt; i++) { // hand -->> buffer
 				int handIndex          = inputNumbers[i] - '0' - 1;
-				// 我已经测到这里啦 前面都没有bug 就这个函数有问题
-				printf("%d\n",handIndex);
 				buffer[*bufferNum + i] = hand[handIndex];
 				hand[handIndex].value  = 0;
 			}
@@ -382,9 +390,27 @@ int sufferDamage(card *hand, int *handNum, card *buffer,
 			rearrangeCards(hand);
 			return 0;
 		} else {
-			printf("Invalid input! Please choose again: \n");
-			return -1;
+			printf("Invalid Input! Please choose again: \n");
 		}
 	}
 	return 1;
+}
+
+// 使用joker技能 弃掉所有手牌 再抽满
+void useJokerPower(card *hand, int *handNum, card *buffer,
+                   int *bufferNum, deque *deck, int *jokerNum)
+{
+	if (*jokerNum == 0) {
+		printf("You have run out of joker power.\n");
+	} else {
+		// 将手牌移入buffer
+		for (int i = 0; i < *handNum; i++) {
+			buffer[*bufferNum + i] = hand[i];
+			hand[i].value          = 0;
+		}
+		*bufferNum += *handNum;                      // buffer数量增加
+		*handNum = 0;                                // 此时手牌数归零
+		hireFromDeck(deck, hand, HAND_MAX, handNum); // 抽满手牌
+		(*jokerNum)--;                               // 用去一次joker能力
+	}
 }
