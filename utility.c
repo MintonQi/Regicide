@@ -325,7 +325,7 @@ void killEnemy(card *buffer, int *bufferNum, card *discard, int *discardNum,
 int sufferDamage(card *hand, int *handNum, card *buffer,
                  int *bufferNum, enemy currentEnemy, int *alive)
 {
-	printf("You are attacked, please discard hand cards >= %d points.\n", currentEnemy.attack);
+	printf("You are attacked, please DISCARD hand cards >= %d points.\n", currentEnemy.attack);
 	int valueSum = 0;
 	for (int i = 0; i < *handNum; i++) { // 计算所有手牌数总值
 		valueSum += hand[i].value;
@@ -340,9 +340,9 @@ int sufferDamage(card *hand, int *handNum, card *buffer,
 		printf("Enemy has no attack, you can skip this by enter 0\n");
 	}
 	// 有足够的牌可以弃
-	printf("Choose the hand numbers you want to play:\n");
+	printf("Choose the hand numbers you want to DISCARD:\n");
 	printf("(No spaces between hand numbers, and press enter to play)\n");
-	char inputNumbers[INPUT_MAX];
+	char inputNumbers[HAND_MAX];
 	while (1) {
 		int isValid = 1, cnt = 0; // isValid为1 代表valid cnt是输入的数量
 		// 输入的index是否valid
@@ -425,7 +425,7 @@ int isUseJokerPower(card *hand, int *handNum, card *buffer,
 					isValid = 0;
 				break;
 			}
-			if (cnt > 2) {
+			if (cnt > 0) {
 				isValid = 0;
 				continue;
 			} else {
@@ -448,8 +448,9 @@ int isUseJokerPower(card *hand, int *handNum, card *buffer,
 			} else if (inputNumbers[0] == 'N' || inputNumbers[0] == 'n') {
 				return 0;
 			} else {
-				printf("Invalid input! Please enter again: \n");
+				isValid = 0;
 			}
 		}
+		printf("Invalid input! Please enter again!\n");
 	}
 }
