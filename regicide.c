@@ -29,24 +29,28 @@ int main()
 	addCardsToDeck(&deck, soldiers, SOLDIERS_MAX);
 	// 从牌堆抽满手牌
 	hireFromDeck(&deck, hand, HAND_MAX, &handNum);
-
+	printf("Heart ♥    Diamond ♦    Club ♣    Spade ♠ \n");
+	printf("--------------------------------------------------------------------------------------------------------\n");
 	while (alive) {
 		// 展示当前enemy
-		printf("PRINT ENEMIES\n");
-		printf("%s %s %d %d\n", enemies[enemyIndex].enemy_card.suit, enemies[enemyIndex].enemy_card.vname,
-		       enemies[enemyIndex].attack, enemies[enemyIndex].health);
+		displayEnemy(enemies[enemyIndex]);
+		printf("--------------------------------------------------------------------------------------------------------\n");
 		// 展示当前牌组
 		displayCards(hand, handNum, HAND_TYPE);
 		displayCards(buffer, bufferNum, BUFFER_TYPE);
 		displayCards(discard, discardNum, DISCARD_TYPE);
-		// 阶段一 出牌前询问是否用joker技能
-		if (isUseJokerPower(hand, &handNum, buffer, &bufferNum, &deck, &jokerNum)) {
-			// 展示重抽后牌组
-			displayCards(hand, handNum, HAND_TYPE);
-			displayCards(buffer, bufferNum, BUFFER_TYPE);
-		}
+		printf("--------------------------------------------------------------------------------------------------------\n");
+		// 阶段一 出牌前询问是否用joker技能 只有有joker技能才询问
+		if (jokerNum > 0)
+			if (isUseJokerPower(hand, &handNum, buffer, &bufferNum, &deck, &jokerNum)) {
+				// 展示重抽后牌组
+				displayCards(hand, handNum, HAND_TYPE);
+				displayCards(buffer, bufferNum, BUFFER_TYPE);
+				printf("--------------------------------------------------------------------------------------------------------\n");
+			}
 		// 打出手牌 inputNum为打出手牌数
 		int inputNum = getValidInput(hand, &handNum, buffer, &bufferNum);
+		printf("--------------------------------------------------------------------------------------------------------\n");
 		// 激活红色技能
 		activateRedSuitPower(hand, &handNum, buffer, bufferNum, enemies[enemyIndex], inputNum, discard, &discardNum, &deck);
 		// 攻击enemy status=0还活着 1代表overkill 2代表归化
@@ -54,22 +58,27 @@ int main()
 		// 如果enemy没死 承受攻击
 		if (status == 0) {
 			// 展示现在enemy状态
-			printf("PRINT ENEMIES\n");
-			printf("%s %s %d %d\n", enemies[enemyIndex].enemy_card.suit, enemies[enemyIndex].enemy_card.vname,
-			       enemies[enemyIndex].attack, enemies[enemyIndex].health);
+			displayEnemy(enemies[enemyIndex]);
+			printf("--------------------------------------------------------------------------------------------------------\n");
 			// 展示现在牌组
 			displayCards(hand, handNum, HAND_TYPE);
 			displayCards(buffer, bufferNum, BUFFER_TYPE);
-			// 阶段四 承受伤害前询问是否用joker技能
-			if (isUseJokerPower(hand, &handNum, buffer, &bufferNum, &deck, &jokerNum)) {
-				// 展示重抽后牌组
-				displayCards(hand, handNum, HAND_TYPE);
-				displayCards(buffer, bufferNum, BUFFER_TYPE);
-			}
+			printf("--------------------------------------------------------------------------------------------------------\n");
+			// 阶段四 承受伤害前询问是否用joker技能 只有有joker技能才询问
+			if (jokerNum > 0)
+				if (isUseJokerPower(hand, &handNum, buffer, &bufferNum, &deck, &jokerNum)) {
+					// 展示重抽后牌组
+					displayCards(hand, handNum, HAND_TYPE);
+					displayCards(buffer, bufferNum, BUFFER_TYPE);
+					printf("--------------------------------------------------------------------------------------------------------\n");
+				}
 			// 受到攻击弃牌
 			sufferDamage(hand, &handNum, buffer, &bufferNum, enemies[enemyIndex], &alive);
-			displayCards(hand, handNum, HAND_TYPE);
-			displayCards(buffer, bufferNum, BUFFER_TYPE);
+			if (alive) {
+				displayCards(hand, handNum, HAND_TYPE);
+				displayCards(buffer, bufferNum, BUFFER_TYPE);
+				printf("--------------------------------------------------------------------------------------------------------\n");
+			}
 		} else { // enemy死了 进入新的回合
 			killEnemy(buffer, &bufferNum, discard, &discardNum, enemies[enemyIndex], &enemyIndex, &deck, status);
 		}

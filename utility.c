@@ -149,10 +149,10 @@ void displayCards(card *cards, int cardNum, int type)
 
 void displayEnemy(enemy currentEnemy)
 {
-	printf("Current Enemy:%7s%2s\n", currentEnemy.enemy_card.suit,
+	printf("Current Enemy:%7s%2s	\n", currentEnemy.enemy_card.suit,
 	       currentEnemy.enemy_card.vname);
-	printf("Attack: %d\n", currentEnemy.attack);
-	printf("Health: %d\n", currentEnemy.health);
+	printf("Attack: %d\t", currentEnemy.attack);
+	printf("Health: %d\t\n", currentEnemy.health);
 }
 
 // 阶段1：获取玩家想要打出的卡牌并移入buffer 返回打出的手牌数
@@ -412,16 +412,29 @@ int sufferDamage(card *hand, int *handNum, card *buffer,
 
 // 询问是否使用joker技能 弃掉所有手牌 再抽满 使用返回1 不适用返回0
 int isUseJokerPower(card *hand, int *handNum, card *buffer,
-                     int *bufferNum, deque *deck, int *jokerNum)
+                    int *bufferNum, deque *deck, int *jokerNum)
 {
 	printf("Do you want to use joker power? (Y/N) \n");
+	char inputNumbers[2]; //'Y' or 'N' 加上'\n'
 	while (1) {
-		char c = getchar();
-		if (c == 'Y') {
-			if (*jokerNum == 0) {
-				printf("You have run out of joker power.\n");
-				return 0;
+		int isValid = 1, cnt = 0; // isValid为1 代表valid cnt是输入的数量
+		while (1) {
+			char c = getchar();
+			if (c == '\n') {  //  接收到回车后break
+				if (cnt == 0) // 没有输入直接回车的是invalid
+					isValid = 0;
+				break;
+			}
+			if (cnt > 2) {
+				isValid = 0;
+				continue;
 			} else {
+				inputNumbers[cnt] = c;
+			}
+			cnt++;
+		}
+		if (isValid == 1) {
+			if (inputNumbers[0] == 'Y' || inputNumbers[0] == 'y') {
 				// 将手牌移入buffer
 				for (int i = 0; i < *handNum; i++) {
 					buffer[*bufferNum + i] = hand[i];
@@ -432,12 +445,11 @@ int isUseJokerPower(card *hand, int *handNum, card *buffer,
 				hireFromDeck(deck, hand, HAND_MAX, handNum); // 抽满手牌
 				(*jokerNum)--;                               // 用去一次joker能力
 				return 1;
+			} else if (inputNumbers[0] == 'N' || inputNumbers[0] == 'n') {
+				return 0;
+			} else {
+				printf("Invalid input! Please enter again: \n");
 			}
-
-		} else if (c == 'N') {
-			return 0;
-		} else {
-			printf("Invalid input! Please enter again: \n");
 		}
 	}
 }
