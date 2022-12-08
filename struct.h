@@ -5,6 +5,9 @@
 #define ENEMIES_MAX 12
 #define SOLDIERS_MAX 40
 #define INPUT_MAX 4
+#define HAND_TYPE 1
+#define BUFFER_TYPE 2
+#define DISCARD_TYPE 3
 
 typedef struct {
 	char *suit;

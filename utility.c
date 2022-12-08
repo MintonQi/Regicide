@@ -123,15 +123,28 @@ void healFromDiscard(deque *deck, card *discard, int n, int *discardNum)
 	rearrangeCards(discard);
 }
 
-void displayHand(card *cards, int handNum)
+// 展示牌 type=1代表手牌 2代表buffer 3代表弃牌堆
+void displayCards(card *cards, int cardNum, int type)
 {
-	printf("Hand Cards:   ");
-	for (int i = 0; i < handNum; i++) // print hand cards
-		printf("%7s%2s  ", cards[i].suit, cards[i].vname);
-	printf("\nHand No.      ");
-	for (int j = 0; j < handNum; j++) // print hand number
-		printf("%9d  ", j + 1);
-	printf("\n");
+	if (type == 1) {
+		printf("Hand Cards:   ");
+		for (int i = 0; i < cardNum; i++) // 打印手牌
+			printf("%7s%2s  ", cards[i].suit, cards[i].vname);
+		printf("\nHand No.      ");
+		for (int j = 0; j < cardNum; j++) // 手牌index
+			printf("%9d  ", j + 1);
+		printf("\n");
+	} else if (type == 2) {
+		printf("Buffer Cards:  ");
+		for (int i = 0; i < cardNum; i++) // 打印buffer
+			printf("%7s%2s  ", cards[i].suit, cards[i].vname);
+		printf("\n");
+	} else {
+		printf("Discard Cards:   ");
+		for (int i = 0; i < cardNum; i++) // 打印弃牌堆
+			printf("%7s%2s  ", cards[i].suit, cards[i].vname);
+		printf("\n");
+	}
 }
 
 void displayEnemy(enemy currentEnemy)
@@ -310,7 +323,7 @@ void killEnemy(card *buffer, int *bufferNum, card *discard, int *discardNum,
 
 // 被攻击 弃牌， 若没有足够牌游戏结束返回-1 否则返回0
 int sufferDamage(card *hand, int *handNum, card *buffer,
-                 int *bufferNum, enemy currentEnemy)
+                 int *bufferNum, enemy currentEnemy, int *alive)
 {
 	printf("You are attacked, please discard hand cards >= %d points.\n", currentEnemy.attack);
 	int valueSum = 0;
@@ -319,6 +332,7 @@ int sufferDamage(card *hand, int *handNum, card *buffer,
 	}
 	if (valueSum < currentEnemy.attack) { // 牌不够 游戏结束
 		printf("You don't have enough cards. You die.\n");
+		*alive = 0;
 		return -1;
 	}
 	// 如果enemy没有攻击力 提醒玩家可以不用弃牌 输入0
@@ -396,21 +410,34 @@ int sufferDamage(card *hand, int *handNum, card *buffer,
 	return 1;
 }
 
-// 使用joker技能 弃掉所有手牌 再抽满
-void useJokerPower(card *hand, int *handNum, card *buffer,
-                   int *bufferNum, deque *deck, int *jokerNum)
+// 询问是否使用joker技能 弃掉所有手牌 再抽满 使用返回1 不适用返回0
+int isUseJokerPower(card *hand, int *handNum, card *buffer,
+                     int *bufferNum, deque *deck, int *jokerNum)
 {
-	if (*jokerNum == 0) {
-		printf("You have run out of joker power.\n");
-	} else {
-		// 将手牌移入buffer
-		for (int i = 0; i < *handNum; i++) {
-			buffer[*bufferNum + i] = hand[i];
-			hand[i].value          = 0;
+	printf("Do you want to use joker power? (Y/N) \n");
+	while (1) {
+		char c = getchar();
+		if (c == 'Y') {
+			if (*jokerNum == 0) {
+				printf("You have run out of joker power.\n");
+				return 0;
+			} else {
+				// 将手牌移入buffer
+				for (int i = 0; i < *handNum; i++) {
+					buffer[*bufferNum + i] = hand[i];
+					hand[i].value          = 0;
+				}
+				*bufferNum += *handNum;                      // buffer数量增加
+				*handNum = 0;                                // 此时手牌数归零
+				hireFromDeck(deck, hand, HAND_MAX, handNum); // 抽满手牌
+				(*jokerNum)--;                               // 用去一次joker能力
+				return 1;
+			}
+
+		} else if (c == 'N') {
+			return 0;
+		} else {
+			printf("Invalid input! Please enter again: \n");
 		}
-		*bufferNum += *handNum;                      // buffer数量增加
-		*handNum = 0;                                // 此时手牌数归零
-		hireFromDeck(deck, hand, HAND_MAX, handNum); // 抽满手牌
-		(*jokerNum)--;                               // 用去一次joker能力
 	}
 }

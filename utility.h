@@ -12,7 +12,7 @@ int  min(int a, int b);
 int  max(int a, int b);
 void hireFromDeck(deque *deck, card *hand, int n, int *handNum);
 void healFromDiscard(deque *deck, card *discard, int n, int *discardNum);
-void displayHand(card *cards, int handNum);
+void displayCards(card *cards, int cardNum, int type);
 void displayEnemy(enemy currentEnemy);
 int  getValidInput(card *hand, int *handNum, card *buffer, int *bufferNum);
 void activateRedSuitPower(card *hand, int *handNum, card *buffer, int bufferNum,enemy currentEnemy,
@@ -21,7 +21,7 @@ int  attackEnemy(enemy *currentEnemy, card *buffer, int bufferNum, int inputNum,
 void killEnemy(card *buffer, int *bufferNum, card *discard, int *discardNum,
                enemy currentEnemy, int *enemyIndex, deque *deck, int status);
 int sufferDamage(card *hand, int *handNum, card *buffer,
-                     int *bufferNum, enemy currentEnemy);
-void useJokerPower(card *hand, int *handNum, card *buffer,
-                   int *bufferNum, deque *deck, int *jokerNum);
+                     int *bufferNum, enemy currentEnemy, int *alive);
+int isUseJokerPower(card *hand, int *handNum, card *buffer,
+                     int *bufferNum, deque *deck, int *jokerNum);
 #endif
