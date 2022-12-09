@@ -10,8 +10,8 @@ int main()
 	card  enemies_cards[ENEMIES_MAX];
 	enemy enemies[ENEMIES_MAX];
 	card  soldiers[SOLDIERS_MAX];
-	card  hand[HAND_MAX]        = { 0 };
-	card  buffer[SOLDIERS_MAX]  = { 0 };
+	card  hand[HAND_MAX]                      = { 0 };
+	card  buffer[SOLDIERS_MAX]                = { 0 };
 	card  discard[SOLDIERS_MAX + ENEMIES_MAX] = { 0 };
 	int   handNum = 0, enemyIndex = 0, discardNum = 0, bufferNum = 0, jokerNum = 2; // 一开始有两张joker
 	int   alive = 1, status;                                                        // alive = 1代表活着
@@ -33,10 +33,11 @@ int main()
 	printf("--------------------------------------------------------------------------------------------------------\n");
 	while (alive) {
 		// 展示当前enemy
-		printf("\n");
+		printf("--------------------------------------------------------------------------------------------------------\n");
 		displayEnemy(enemies[enemyIndex]);
 		printf("--------------------------------------------------------------------------------------------------------\n");
 		// 展示当前牌组
+		printf("DECK SIZE: %d\n",deck.size);
 		displayCards(hand, handNum, HAND_TYPE);
 		displayCards(buffer, bufferNum, BUFFER_TYPE);
 		displayCards(discard, discardNum, DISCARD_TYPE);
@@ -81,13 +82,15 @@ int main()
 				printf("--------------------------------------------------------------------------------------------------------\n");
 			}
 		} else { // enemy死了 进入新的回合
-			if(enemyIndex == ENEMIES_MAX - 1){
+			// 如果是最后一个enemy 宣布胜利游戏结束
+			if (enemyIndex == ENEMIES_MAX - 1) {
 				printf("You have slain all the Kings!\n");
-				printf("YOU WIN!\n-------------------------------------------------------------");
+				printf("YOU WIN!\n--------------------------------------------------------------------------------------------------------");
+				return 0;
 			}
 			killEnemy(buffer, &bufferNum, discard, &discardNum, enemies[enemyIndex], &enemyIndex, &deck, status);
 		}
 	}
-	printf("GAME OVER\n----------------------------------------------------------------");
+	printf("GAME OVER\n--------------------------------------------------------------------------------------------------------");
 	return 0;
 }

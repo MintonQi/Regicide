@@ -213,7 +213,7 @@ int getValidInput(card *hand, int *handNum, card *buffer, int *bufferNum)
 					}
 				}
 			}
-			if (isSame == 1) {
+			if (isSame == 1 && cnt > 1) {
 				if (comboCardValues[0] * cnt > 10)
 					isValid = 0;
 			}
@@ -305,7 +305,7 @@ int attackEnemy(enemy *currentEnemy, card *buffer, int bufferNum, int inputNum, 
 }
 
 // status为1代表overkill 2代表归化
-// status>0进此函数
+// status>0进此函数 执行enemy死后的牌组移动的操作
 void killEnemy(card *buffer, int *bufferNum, card *discard, int *discardNum,
                enemy currentEnemy, int *enemyIndex, deque *deck, int status)
 {
@@ -425,7 +425,7 @@ int isUseJokerPower(card *hand, int *handNum, card *buffer,
 					isValid = 0;
 				break;
 			}
-			if (cnt > 0) {
+			if (cnt > 0) { // 超过一位就不行
 				isValid = 0;
 				continue;
 			} else {
@@ -451,6 +451,6 @@ int isUseJokerPower(card *hand, int *handNum, card *buffer,
 				isValid = 0;
 			}
 		}
-		printf("Invalid input! Please enter again!\n");
+		printf("Invalid input! Please enter again: \n");
 	}
 }
