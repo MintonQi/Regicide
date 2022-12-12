@@ -3,8 +3,8 @@
 
 #include "struct.h"
 
-struct deque createDeque();
-void         enqueueHead(struct deque *q, struct card e);
-void         enqueueTail(struct deque *q, struct card e);
-struct card  dequeueHead(struct deque *q);
+deque createDeque();
+void         enqueueHead(deque *q, card e);
+void         enqueueTail(deque *q, card e);
+card  dequeueHead(deque *q);
 #endif
